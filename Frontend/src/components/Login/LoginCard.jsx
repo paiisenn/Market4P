@@ -1,49 +1,49 @@
 import React, { useState, useRef, useEffect } from "react";
 import Logo from "./Logo";
 import FormInput from "./FormInput";
-import { Eye, EyeOff } from "lucide-react";
-import {
-  FaUser,
-  FaLock,
-  FaGoogle,
-  FaFacebook,
-  FaGithub,
-  FaEnvelope,
-} from "react-icons/fa";
+import { Eye, EyeOff, Mail, UserRound } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
 
 function LoginCard() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [formState, setFormState] = useState("login"); // 'login', 'register', 'forgotPassword'
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   // Register state
   const [regUser, setRegUser] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
-  const [regError, setRegError] = useState("");
+  const [regConfirmPassword, setRegConfirmPassword] = useState("");
   const [regLoading, setRegLoading] = useState(false);
+  // Forgot Password state
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   // Refs để đo chiều cao của các form
   const loginFormRef = useRef(null);
   const registerFormRef = useRef(null);
+  const forgotFormRef = useRef(null);
   // State để lưu chiều cao động của container
   const [containerHeight, setContainerHeight] = useState("auto");
 
   // Effect để cập nhật chiều cao của container dựa trên form đang hoạt động
   useEffect(() => {
     const updateHeight = () => {
-      if (isLogin && loginFormRef.current) {
+      if (formState === "login" && loginFormRef.current) {
         setContainerHeight(`${loginFormRef.current.scrollHeight}px`);
-      } else if (!isLogin && registerFormRef.current) {
+      } else if (formState === "register" && registerFormRef.current) {
         setContainerHeight(`${registerFormRef.current.scrollHeight}px`);
+      } else if (formState === "forgotPassword" && forgotFormRef.current) {
+        setContainerHeight(`${forgotFormRef.current.scrollHeight}px`);
       }
     };
     updateHeight();
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
-  }, [isLogin, error, regError]);
+  }, [formState]);
 
   function validate() {
     if (!email && !password) return "Vui lòng nhập email và mật khẩu!";
@@ -57,49 +57,68 @@ function LoginCard() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
     const v = validate();
-    if (v) return setError(v);
+    if (v) return toast.error(v);
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
-    alert("Đăng nhập thành công!");
+    toast.success("Đăng nhập thành công!");
   }
 
   function validateRegister() {
-    if (!regUser || !regEmail || !regPassword)
+    if (!regUser || !regEmail || !regPassword || !regConfirmPassword)
       return "Vui lòng nhập đầy đủ thông tin!";
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!re.test(String(regEmail).toLowerCase())) return "Email không hợp lệ!";
     if (regPassword.length < 6) return "Mật khẩu phải từ 6 ký tự trở lên!";
+    if (regPassword !== regConfirmPassword)
+      return "Mật khẩu xác nhận không khớp!";
     return "";
   }
 
   async function handleRegister(e) {
     e.preventDefault();
-    setRegError("");
     const v = validateRegister();
-    if (v) return setRegError(v);
+    if (v) return toast.error(v);
     setRegLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setRegLoading(false);
-    alert("Đăng ký thành công!");
-    setIsLogin(true);
+    toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+    setFormState("login");
+  }
+
+  async function handleForgotPassword(e) {
+    e.preventDefault();
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!forgotEmail) return toast.error("Vui lòng nhập email!");
+    if (!re.test(String(forgotEmail).toLowerCase()))
+      return toast.error("Email không hợp lệ!");
+
+    setForgotLoading(true);
+    await new Promise((r) => setTimeout(r, 700));
+    setForgotLoading(false);
+    toast.success(
+      `Đã gửi liên kết đặt lại mật khẩu đến email: ${forgotEmail}.`
+    );
   }
 
   return (
-    <div className="max-w-lg w-full bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-animate transition-all duration-300 hover:shadow-2xl">
+    <div className="max-w-lg w-full bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-8 transition-all duration-300 hover:shadow-2xl">
       <div className="flex items-center justify-between gap-4 mb-8">
         <Logo />
         <div className="font-semibold text-right">
           <h1 className="text-2xl font-bold">
-            {isLogin ? "Chào mừng trở lại" : "Đăng ký tài khoản"}
+            {formState === "login" && "Chào mừng trở lại"}
+            {formState === "register" && "Đăng ký tài khoản"}
+            {formState === "forgotPassword" && "Quên mật khẩu"}
           </h1>
           <p className="text-sm text-gray-500">
-            {isLogin
-              ? "Hãy đăng nhập để tiếp tục!"
-              : "Tạo tài khoản để sử dụng dịch vụ!"}
+            {formState === "login" && "Hãy đăng nhập để tiếp tục!"}
+            {formState === "register" && "Tạo tài khoản để sử dụng dịch vụ!"}
+            {formState === "forgotPassword" &&
+              "Nhập email để nhận liên kết đặt lại mật khẩu."}
           </p>
         </div>
       </div>
@@ -109,9 +128,9 @@ function LoginCard() {
       >
         <div
           className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
-            isLogin
+            formState === "login"
               ? "opacity-100 translate-x-0"
-              : "opacity-0 -translate-x-full pointer-events-none"
+              : "opacity-0 -translate-x-full pointer-events-none invisible"
           }`} // Gán ref cho div chứa form Login
         >
           {/* Login Form */}
@@ -127,8 +146,8 @@ function LoginCard() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@gmail.com"
               rightNode={
-                <span className="text-gray-400">
-                  <FaUser size={16} />
+                <span className="text-gray-500">
+                  <UserRound />
                 </span>
               }
             />
@@ -143,7 +162,7 @@ function LoginCard() {
                 <span className="flex items-center gap-2 text-gray-400">
                   <button
                     type="button"
-                    className="text-gray-600 cursor-pointer"
+                    className="text-gray-500 cursor-pointer"
                     onClick={() => setShowPassword((s) => !s)}
                   >
                     {showPassword ? <EyeOff /> : <Eye />}
@@ -152,16 +171,23 @@ function LoginCard() {
               }
             />
 
-            {error && <div className="text-md text-red-600">{error}</div>}
-
             <div className="flex items-center justify-between text-sm text-gray-500 py-2">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" className="rounded" />
-                <span>Ghi nhớ đăng nhập</span>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="rounded accent-amber-500 cursor-pointer"
+                />
+                <span className="hover:text-amber-500 transition-all duration-300">
+                  Ghi nhớ đăng nhập
+                </span>
               </label>
-              <a href="/forgot" className="hover:underline">
+              <button
+                type="button"
+                onClick={() => setFormState("forgotPassword")}
+                className="hover:underline hover:text-amber-500 transition-all duration-300 cursor-pointer"
+              >
                 Quên mật khẩu?
-              </a>
+              </button>
             </div>
 
             <button
@@ -198,27 +224,21 @@ function LoginCard() {
             <div className="flex justify-center gap-4">
               <a
                 href="#"
-                className="p-3 border-2 border-gray-200 rounded-full text-xl text-gray-600 hover:bg-gray-100 hover:border-red-400 hover:text-red-500 transition-all duration-300"
+                className="p-3 border-2 border-gray-200 rounded-full text-xl text-gray-500 hover:bg-gray-100 hover:border-red-400 hover:text-red-500 transition-all duration-300"
+                onClick={() => alert("Tính năng này sớm sẽ được thêm vào sau!")}
               >
                 <FaGoogle />
-              </a>
-              <a
-                href="#"
-                className="p-3 border-2 border-gray-200 rounded-full text-xl text-gray-600 hover:bg-gray-100 hover:border-blue-500 hover:text-blue-600 transition-all duration-300"
-              >
-                <FaFacebook />
               </a>
             </div>
           </form>
         </div>
         <div
           className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
-            !isLogin
+            formState === "register"
               ? "opacity-100 translate-x-0"
-              : "opacity-0 translate-x-full pointer-events-none"
+              : "opacity-0 translate-x-full pointer-events-none invisible"
           }`}
         >
-          {" "}
           {/* Gán ref cho div chứa form Register */}
           {/* Register Form */}
           <form
@@ -233,8 +253,8 @@ function LoginCard() {
               onChange={(e) => setRegUser(e.target.value)}
               placeholder="Nhập tên người dùng"
               rightNode={
-                <span className="text-gray-400">
-                  <FaUser />
+                <span className="text-gray-500">
+                  <UserRound />
                 </span>
               }
             />
@@ -246,8 +266,8 @@ function LoginCard() {
               onChange={(e) => setRegEmail(e.target.value)}
               placeholder="example@gmail.com"
               rightNode={
-                <span className="text-gray-400">
-                  <FaEnvelope />
+                <span className="text-gray-500">
+                  <Mail />
                 </span>
               }
             />
@@ -262,7 +282,7 @@ function LoginCard() {
                 <span className="flex items-center gap-2 text-gray-400">
                   <button
                     type="button"
-                    className="text-gray-600 cursor-pointer"
+                    className="text-gray-500 cursor-pointer"
                     onClick={() => setShowPassword((s) => !s)}
                   >
                     {showPassword ? <EyeOff /> : <Eye />}
@@ -270,10 +290,29 @@ function LoginCard() {
                 </span>
               }
             />
-            {regError && <div className="text-md text-red-600">{regError}</div>}
+
+            <FormInput
+              label="Xác nhận mật khẩu"
+              type={showConfirmPassword ? "text" : "password"}
+              value={regConfirmPassword}
+              onChange={(e) => setRegConfirmPassword(e.target.value)}
+              placeholder="Nhập lại mật khẩu"
+              rightNode={
+                <span className="flex items-center gap-2 text-gray-400">
+                  <button
+                    type="button"
+                    className="text-gray-500 cursor-pointer"
+                    onClick={() => setShowConfirmPassword((s) => !s)}
+                  >
+                    {showConfirmPassword ? <EyeOff /> : <Eye />}
+                  </button>
+                </span>
+              }
+            />
+
             <button
               disabled={regLoading}
-              className="w-full py-3 rounded-xl bg-linear-to-r from-indigo-600 to-amber-500 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 disabled:opacity-60 flex items-center justify-center gap-3"
+              className="w-full py-3 mt-6 cursor-pointer rounded-xl bg-linear-to-r from-indigo-600 to-amber-500 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 disabled:opacity-60 flex items-center justify-center gap-3"
             >
               {regLoading ? (
                 <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
@@ -305,41 +344,102 @@ function LoginCard() {
             <div className="flex justify-center gap-4">
               <a
                 href="#"
-                className="p-3 border-2 border-gray-200 rounded-full text-xl text-gray-600 hover:bg-gray-100 hover:border-red-400 hover:text-red-500 transition-all duration-300"
+                className="p-3 border-2 border-gray-200 rounded-full text-xl text-gray-500 hover:bg-gray-100 hover:border-red-400 hover:text-red-500 transition-all duration-300"
+                onClick={() => alert("Tính năng này sớm sẽ được thêm vào sau!")}
               >
                 <FaGoogle />
-              </a>
-              <a
-                href="#"
-                className="p-3 border-2 border-gray-200 rounded-full text-xl text-gray-600 hover:bg-gray-100 hover:border-blue-500 hover:text-blue-600 transition-all duration-300"
-              >
-                <FaFacebook />
               </a>
             </div>
           </form>
         </div>
+        {/* Forgot Password Form */}
+        <div
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
+            formState === "forgotPassword"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-full pointer-events-none invisible"
+          }`}
+        >
+          <form
+            ref={forgotFormRef}
+            onSubmit={handleForgotPassword}
+            className="space-y-4 mx-2"
+          >
+            <FormInput
+              label="Email"
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              placeholder="Nhập email đã đăng ký"
+              rightNode={
+                <span className="text-gray-500">
+                  <Mail />
+                </span>
+              }
+            />
+
+            <button
+              disabled={forgotLoading}
+              className="w-full py-3 mt-6 cursor-pointer rounded-xl bg-linear-to-r from-indigo-600 to-amber-500 text-white font-semibold transition-all duration-300 hover:shadow-md hover:shadow-indigo-500/40 hover:-translate-y-0.5 disabled:opacity-60 flex items-center justify-center gap-3"
+            >
+              {forgotLoading ? (
+                <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              ) : null}
+              <span>
+                {forgotLoading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
+              </span>
+            </button>
+          </form>
+        </div>
       </div>
-      <div className="mt-10 text-center text-sm text-gray-500">
-        {isLogin ? (
+      <div className="mt-6 text-center text-sm text-gray-500">
+        {formState === "login" ? (
           <>
             <span>Bạn chưa có tài khoản?</span>
             <button
               type="button"
               className="ml-2 text-amber-500 font-medium hover:underline hover:text-amber-600 transition-all duration-300 cursor-pointer"
-              onClick={() => setIsLogin(false)}
+              onClick={() => setFormState("register")}
             >
               Đăng ký
             </button>
           </>
-        ) : (
+        ) : formState === "register" ? (
           <>
-            <span>Đã có tài khoản?</span>
+            <span>Bạn đã có tài khoản?</span>
             <button
               type="button"
               className="ml-2 text-amber-500 font-medium hover:underline hover:text-amber-600 transition-all duration-300 cursor-pointer"
-              onClick={() => setIsLogin(true)}
+              onClick={() => setFormState("login")}
             >
               Đăng nhập
+            </button>
+          </>
+        ) : (
+          // formState === 'forgotPassword'
+          <>
+            <span>Bạn đã nhớ ra mật khẩu rồi?</span>
+            <button
+              type="button"
+              className="ml-2 text-amber-500 font-medium hover:underline hover:text-amber-600 transition-all duration-300 cursor-pointer"
+              onClick={() => setFormState("login")}
+            >
+              Quay lại Đăng nhập
             </button>
           </>
         )}
