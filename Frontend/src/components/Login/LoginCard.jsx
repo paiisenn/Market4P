@@ -229,7 +229,7 @@ function LoginCard() {
       <div className="flex items-center justify-between gap-4 mb-8">
         <Logo />
         <div className="font-semibold text-right">
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-lg sm:text-2xl font-bold">
             {formState === "login" && "Chào mừng trở lại"}
             {formState === "register" && "Đăng ký tài khoản"}
             {formState === "forgotPassword" && "Quên mật khẩu"}
@@ -243,15 +243,15 @@ function LoginCard() {
         </div>
       </div>
       <div
-        className="relative overflow-hidden transition-[height] duration-500 ease-in-out" // Giữ lại transition
-        style={{ height: containerHeight }} // Sử dụng chiều cao động
+        className="relative overflow-hidden transition-[height] duration-500 ease-in-out"
+        style={{ height: containerHeight }}
       >
         <div
           className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
             formState === "login"
               ? "opacity-100 translate-x-0"
               : "opacity-0 -translate-x-full pointer-events-none invisible"
-          }`} // Gán ref cho div chứa form Login
+          }`}
         >
           {/* Login Form */}
           <form
@@ -267,7 +267,7 @@ function LoginCard() {
               placeholder="example@gmail.com"
               rightNode={
                 <span className="text-gray-500">
-                  <UserRound />
+                  <Mail />
                 </span>
               }
             />
