@@ -1,9 +1,113 @@
 import React, { useState, useRef, useEffect } from "react";
 import Logo from "./Logo";
 import FormInput from "./FormInput";
-import { Eye, EyeOff, Mail, UserRound } from "lucide-react";
+import { Eye, EyeOff, Mail, UserRound, Check, X } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
+
+// Component nhỏ để hiển thị độ mạnh mật khẩu
+const PasswordStrengthMeter = ({ password = "" }) => {
+  const calculateStrength = (pass) => {
+    let score = 0;
+    if (!pass) return score;
+
+    // 1. Điểm từ độ dài (tối đa 25 điểm)
+    score += Math.min(pass.length * 2.5, 25);
+
+    // 2. Điểm từ các loại ký tự
+    const variations = {
+      digits: /\d/.test(pass),
+      lower: /[a-z]/.test(pass),
+      upper: /[A-Z]/.test(pass),
+    };
+    if (variations.lower) score += 15; // Chữ thường: điểm vừa
+    if (variations.upper) score += 25; // Chữ hoa: điểm cao
+    if (variations.digits) score += 25; // Số: điểm cao
+
+    // 3. Điểm thưởng nếu mật khẩu đủ tốt (dài và đa dạng)
+    const variationCount = Object.values(variations).filter(Boolean).length;
+    if (pass.length >= 8 && variationCount >= 3) {
+      score += 15;
+    }
+
+    // Đảm bảo điểm không vượt quá 100
+    return Math.min(score, 100);
+  };
+
+  const score = calculateStrength(password);
+  let label = "";
+  let color = "bg-gray-200";
+  let textColor = "";
+
+  if (score > 0 && score < 40) {
+    label = "Chưa ổn lắm";
+    color = "bg-red-500";
+    textColor = "text-red-500";
+  } else if (score >= 40 && score < 75) {
+    label = "Trông cũng tạm được á!";
+    color = "bg-yellow-500";
+    textColor = "text-yellow-500";
+  } else if (score >= 75) {
+    label = "Quá okela luôn nha!";
+    color = "bg-green-500";
+    textColor = "text-green-500";
+  }
+
+  const requirements = [
+    { label: "Ít nhất 6 ký tự", satisfied: password.length >= 6 },
+    {
+      label: "Có ít nhất một chữ thường (a-z)",
+      satisfied: /[a-z]/.test(password),
+    },
+    {
+      label: "Có ít nhất một chữ hoa (A-Z)",
+      satisfied: /[A-Z]/.test(password),
+    },
+    { label: "Có ít nhất một số (0-9)", satisfied: /\d/.test(password) },
+  ];
+
+  if (password.length === 0) return null;
+
+  return (
+    <div className="mt-2 space-y-2 transition-all duration-300">
+      {/* Thanh tiến trình */}
+      <div className="flex w-full h-2 rounded-full overflow-hidden bg-gray-200">
+        <div
+          className={`transition-all duration-300 ${color}`}
+          style={{ width: `${score}%` }}
+        ></div>
+      </div>
+
+      {/* Nhãn trạng thái */}
+      {label && (
+        <p
+          className={`text-xs text-right font-medium transition-colors duration-300 ${textColor}`}
+        >
+          Độ mạnh: {label}
+        </p>
+      )}
+
+      {/* Danh sách yêu cầu */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs">
+        {requirements.map((req, index) => (
+          <div
+            key={index}
+            className={`flex items-center transition-colors duration-300 ${
+              req.satisfied ? "text-green-600" : "text-gray-500"
+            }`}
+          >
+            {req.satisfied ? (
+              <Check className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+            ) : (
+              <X className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+            )}
+            <span>{req.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 function LoginCard() {
   const [formState, setFormState] = useState("login"); // 'login', 'register', 'forgotPassword'
@@ -63,6 +167,9 @@ function LoginCard() {
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
     toast.success("Đăng nhập thành công!");
+    // Làm trống form đăng nhập
+    setEmail("");
+    setPassword("");
   }
 
   function validateRegister() {
@@ -70,8 +177,14 @@ function LoginCard() {
       return "Vui lòng nhập đầy đủ thông tin!";
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // Kiểm tra các yêu cầu về mật khẩu
     if (!re.test(String(regEmail).toLowerCase())) return "Email không hợp lệ!";
-    if (regPassword.length < 6) return "Mật khẩu phải từ 6 ký tự trở lên!";
+    if (regPassword.length < 6) return "Mật khẩu phải có ít nhất 6 ký tự!";
+    if (!/[a-z]/.test(regPassword))
+      return "Mật khẩu phải chứa ít nhất một chữ thường!";
+    if (!/[A-Z]/.test(regPassword))
+      return "Mật khẩu phải chứa ít nhất một chữ hoa!";
+    if (!/\d/.test(regPassword)) return "Mật khẩu phải chứa ít nhất một số!";
     if (regPassword !== regConfirmPassword)
       return "Mật khẩu xác nhận không khớp!";
     return "";
@@ -86,6 +199,11 @@ function LoginCard() {
     setRegLoading(false);
     toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
     setFormState("login");
+    // Làm trống form đăng ký
+    setRegUser("");
+    setRegEmail("");
+    setRegPassword("");
+    setRegConfirmPassword("");
   }
 
   async function handleForgotPassword(e) {
@@ -102,6 +220,8 @@ function LoginCard() {
     toast.success(
       `Đã gửi liên kết đặt lại mật khẩu đến email: ${forgotEmail}.`
     );
+    // Làm trống form quên mật khẩu
+    setForgotEmail("");
   }
 
   return (
@@ -290,6 +410,8 @@ function LoginCard() {
                 </span>
               }
             />
+            {/* Thêm thanh trạng thái mật khẩu */}
+            <PasswordStrengthMeter password={regPassword} />
 
             <FormInput
               label="Xác nhận mật khẩu"
