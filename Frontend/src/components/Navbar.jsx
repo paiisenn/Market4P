@@ -3,7 +3,7 @@ import { Store, ShoppingCart, Search } from "lucide-react"
 
 function Navbar() {
     return (
-        <main className="flex justify-around px-10 py-4 font-semibold text-white bg-[#051922]">
+        <main className="fixed z-10 left-0 right-0 flex justify-around px-10 py-4 font-semibold text-white bg-[#051922]">
             <div className="flex gap-x-0.5 items-center text-amber-600">
                 <div>
                     <Store size={37}></Store>
