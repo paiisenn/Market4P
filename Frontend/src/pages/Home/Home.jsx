@@ -1,9 +1,13 @@
+import PromoCountdown from '../../components/PromoCountdown/PromoCountdown'
 import Navbar from "../../components/navbar"
+import Button from '../../components/Button/Button'
 import trangchu from "../../assets/images/trangchu.jpg"
 import { Truck, PhoneCall, RefreshCcw, ShoppingCart } from "lucide-react"
 import berry from "../../assets/images/berry.jpg"
 import strawberry from "../../assets/images/strawberry.jpg"
 import lemon from "../../assets/images/lemon.jpg"
+import HIKANstrawberry from "../../assets/images/HIKANstrawberry.jpg"
+import Footer from '../../components/Footer'
 
 function Home() {
     return (
@@ -31,7 +35,7 @@ function Home() {
                     </div>
                 </div>
             </header>
-            <div className="pb-50">
+            <div className="">
 
                 {/* Dịch vụ */}
                 <div className="p-20 bg-gray-100 flex items-center justify-around">
@@ -93,10 +97,7 @@ function Home() {
                                 <p className="my-3">Per Kg</p>
                                 <p className="text-2xl font-bold">165.000 vnđ</p>
                             </div>
-                            <button className="mx-auto mt-2 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full">
-                                <ShoppingCart></ShoppingCart>
-                                Add to card
-                            </button>
+                            <Button></Button>
                         </div>
                         <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
                             <img src={berry} alt="" className="object-cover w-70" />
@@ -105,10 +106,7 @@ function Home() {
                                 <p className="my-3">Per Kg</p>
                                 <p className="text-2xl font-bold">125.000 vnđ</p>
                             </div>
-                            <button className="mx-auto mt-2 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full">
-                                <ShoppingCart></ShoppingCart>
-                                Add to card
-                            </button>
+                            <Button></Button>
                         </div>
                         <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
                             <img src={lemon} alt="" className="object-cover w-70" />
@@ -117,14 +115,47 @@ function Home() {
                                 <p className="my-3">Per Kg</p>
                                 <p className="text-2xl font-bold">45.000 vnđ</p>
                             </div>
-                            <button className="mx-auto mt-2 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full">
-                                <ShoppingCart></ShoppingCart>
-                                Add to card
-                            </button>
+                            <Button></Button>
                         </div>
                     </div>
                 </div>
+
+                {/* Giảm giá */}
+                <div className="p-20 flex items-center gap-x-4 pl-52 bg-gray-100">
+                    <div className="relative ">
+                        <img src={HIKANstrawberry} alt="" className="object-cover min-w-130" />
+                        <div className="absolute top-4 left-4 p-6 bg-amber-600 rounded-full border-4 border-orange-300">
+                            <p className="text-center">
+                                <span className="text-xl font-bold">27%</span>
+                                <br />
+                                <span className="">per kg</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div className='text-start'>
+                        <p className='text-4xl font-bold flex gap-x-2'>
+                            <span className='text-amber-600'>
+                                Siêu
+                            </span>
+                            giảm giá
+                        </p>
+                        <div className='mb-4'>
+                            <p className='py-2 mb-5 font-semibold text-xl'>DÂU TÂY HIKAN</p>
+                            <p>
+                                Dâu tây 🍓 là loại trái cây đỏ mọng, có vị ngọt xen lẫn chua nhẹ, hương thơm đặc trưng và được nhiều người yêu thích.
+                                Không chỉ ngon miệng, dâu tây còn giàu vitamin C, chất xơ và chất chống oxy hóa, giúp tăng cường sức khỏe,
+                                làm đẹp da và hỗ trợ hệ miễn dịch.
+                            </p>
+                        </div>
+                        <PromoCountdown></PromoCountdown>
+                        <button className=" mt-5 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full">
+                            <ShoppingCart></ShoppingCart>
+                            Add to card
+                        </button>
+                    </div>
+                </div>
             </div>
+            <Footer></Footer>
         </main>
     )
 }
