@@ -18,7 +18,7 @@ function Navbar() {
                     <NavLink
                         to="/"
                         className={({ isActive }) =>
-                            isActive ? "text-amber-600 font-medium" : "hover:text-amber-600"
+                            isActive ? "text-amber-600" : "hover:text-amber-600"
                         }
                     >
                         Trang chủ
@@ -29,7 +29,7 @@ function Navbar() {
                     <NavLink
                         to="/about"
                         className={({ isActive }) =>
-                            isActive ? "text-amber-600 font-medium" : "hover:text-amber-600"
+                            isActive ? "text-amber-600" : "hover:text-amber-600"
                         }
                     >
                         Giới thiệu
@@ -40,7 +40,7 @@ function Navbar() {
                     <NavLink
                         to="/contact"
                         className={({ isActive }) =>
-                            isActive ? "text-amber-600 font-medium" : "hover:text-amber-600"
+                            isActive ? "text-amber-600" : "hover:text-amber-600"
                         }
                     >
                         Liên hệ
@@ -51,7 +51,7 @@ function Navbar() {
                     <NavLink
                         to="/checkout"
                         className={({ isActive }) =>
-                            isActive ? "text-amber-600 font-medium" : "hover:text-amber-600"
+                            isActive ? "text-amber-600" : "hover:text-amber-600"
                         }
                     >
                         Thanh toán
@@ -62,7 +62,7 @@ function Navbar() {
                     <NavLink
                         to="/shop"
                         className={({ isActive }) =>
-                            isActive ? "text-amber-600 font-medium" : "hover:text-amber-600"
+                            isActive ? "text-amber-600" : "hover:text-amber-600"
                         }
                     >
                         Cửa hàng

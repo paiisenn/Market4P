@@ -1,11 +1,11 @@
-import { Send, Twitter, } from "lucide-react"
+import { Send, } from "lucide-react"
 
 const Footer = () => {
     return (
         <div>
             <div className="p-20 flex  justify-between gap-x-10 bg-[#051922] text-white">
                 <div className="w-100">
-                    <h1 className="text-xl font-semibold">Về chúng tôi</h1>
+                    <h1 className="text-xl font-semibold">Về Chúng tôi</h1>
                     <div className="w-[4vh] h-0.5 my-3 bg-amber-600"></div>
                     <p className="text-gray-400">
                         Chúng tôi là đội ngũ đam mê mang đến những sản phẩm chất lượng,
