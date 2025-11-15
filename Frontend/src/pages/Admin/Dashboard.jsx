@@ -1,15 +1,28 @@
 import React from "react";
+import Sidebar from "../../components/Admin/Layout/AdminSlidebar";
+import Header from "../../components/Admin/Layout/AdminHeader";
+import { Outlet } from "react-router-dom";
 
-function AdminDashboard() {
+function Dashboard() {
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-      <p className="mt-4 text-gray-600">
-        Chào mừng bạn đến với trang quản trị.
-      </p>
-      {/* Tại đây bạn có thể thêm các component quản lý khác như quản lý sản phẩm, người dùng, đơn hàng, v.v. */}
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <Header />
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+          <div className="container mx-auto px-6 py-8">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
 
-export default AdminDashboard;
+export default Dashboard;

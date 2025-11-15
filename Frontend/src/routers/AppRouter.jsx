@@ -1,9 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import App from "../App";
+import App from "../App.jsx";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
+import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
+import Checkout from "../pages/Checkout/Checkout";
+import Shop from "../pages/Shop/Shop";
+
 import AdminLogin from "../pages/Admin/AdminLogin";
 import AdminDashboard from "../pages/Admin/Dashboard";
+import DashboardHome from "../pages/Admin/content/DashboardHome";
+import ProductList from "../pages/Admin/content/ProductList";
+import AddProduct from "../pages/Admin/content/AddProduct";
 import ProtectedRoute from "../pages/Admin/ProtectedRoute";
 
 export default function AppRouter() {
@@ -11,19 +19,29 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+          <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
-          <Route path="home" element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="shop" element={<Shop />} />
+          <Route path="checkout" element={<Checkout />} />
 
           {/* Thêm route cho Admin */}
           <Route path="admin/login" element={<AdminLogin />} />
           <Route
-            path="admin/dashboard"
+            path="admin/dashboard/*"
             element={
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
             }
-          />
+          >
+            {/* Route con sẽ được render bên trong Outlet của AdminDashboard */}
+            <Route index element={<DashboardHome />} />
+            <Route path="products" element={<ProductList />} />
+            <Route path="products/add" element={<AddProduct />} />
+            {/* Thêm các route con khác ở đây (customers, orders, etc.) */}
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
