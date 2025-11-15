@@ -12,6 +12,7 @@ import AdminDashboard from "../pages/Admin/Dashboard";
 import DashboardHome from "../components/Admin/content/DashboardHome.jsx";
 import ProductList from "../components/Admin/content/ProductList.jsx";
 import AddProduct from "../components/Admin/content/AddProduct.jsx";
+import SearchResults from "../components/Admin/Layout/SearchResults.jsx";
 import ProtectedRoute from "../pages/Admin/ProtectedRoute";
 
 export default function AppRouter() {
@@ -40,6 +41,7 @@ export default function AppRouter() {
             <Route index element={<DashboardHome />} />
             <Route path="products" element={<ProductList />} />
             <Route path="products/add" element={<AddProduct />} />
+            <Route path="search" element={<SearchResults />} />
             {/* Thêm các route con khác ở đây (customers, orders, etc.) */}
           </Route>
         </Route>

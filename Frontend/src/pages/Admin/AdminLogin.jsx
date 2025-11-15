@@ -28,18 +28,28 @@ function AdminLogin() {
     if (v) return toast.error(v);
     setLoading(true);
 
-    // Gọi API đăng nhập admin ở đây, thay vì timeout
-    await new Promise((r) => setTimeout(r, 700)); // Giả sử call API
-    setLoading(false);
+    // Giả lập gọi API và kiểm tra credentials
+    // Trong ứng dụng thực tế, bạn sẽ gọi API ở đây
+    try {
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // Hardcode thông tin đăng nhập của admin để demo
+          if (email === "admin@gmail.com" && password === "admin123") {
+            resolve();
+          } else {
+            reject(new Error("Email hoặc mật khẩu không chính xác!"));
+          }
+        }, 700);
+      });
 
-    // Lưu trạng thái đăng nhập vào localStorage
-    localStorage.setItem("isAdminAuthenticated", "true");
-
-    toast.success("Đăng nhập thành công!");
-    navigate("/admin/dashboard"); // Chuyển hướng đến dashboard
-
-    setEmail("");
-    setPassword("");
+      localStorage.setItem("isAdminAuthenticated", "true");
+      toast.success("Đăng nhập thành công!");
+      navigate("/admin/dashboard");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
