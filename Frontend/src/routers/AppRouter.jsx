@@ -9,9 +9,9 @@ import Shop from "../pages/Shop/Shop";
 
 import AdminLogin from "../pages/Admin/AdminLogin";
 import AdminDashboard from "../pages/Admin/Dashboard";
-import DashboardHome from "../pages/Admin/content/DashboardHome";
-import ProductList from "../pages/Admin/content/ProductList";
-import AddProduct from "../pages/Admin/content/AddProduct";
+import DashboardHome from "../components/Admin/content/DashboardHome.jsx";
+import ProductList from "../components/Admin/content/ProductList.jsx";
+import AddProduct from "../components/Admin/content/AddProduct.jsx";
 import ProtectedRoute from "../pages/Admin/ProtectedRoute";
 
 export default function AppRouter() {
