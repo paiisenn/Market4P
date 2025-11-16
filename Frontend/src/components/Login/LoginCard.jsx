@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Logo from "./Logo";
 import FormInput from "./FormInput";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, UserRound, Check, X } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
@@ -110,6 +111,7 @@ const PasswordStrengthMeter = ({ password = "" }) => {
 };
 
 function LoginCard() {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState("login"); // 'login', 'register', 'forgotPassword'
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -164,12 +166,46 @@ function LoginCard() {
     const v = validate();
     if (v) return toast.error(v);
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setLoading(false);
-    toast.success("Đăng nhập thành công!");
-    // Làm trống form đăng nhập
-    setEmail("");
-    setPassword("");
+
+    // Giả lập gọi API
+    try {
+      const user = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // Hardcode thông tin đăng nhập của admin để demo
+          if (email === "admin@gmail.com" && password === "admin123") {
+            // Nếu là admin, trả về object với role 'admin'
+            resolve({ email: "admin@gmail.com", name: "Admin", role: "admin" });
+          } else if (email === "user@gmail.com" && password === "user123") {
+            // Giả lập đăng nhập user thành công, trả về role 'user'
+            resolve({
+              email: "user@gmail.com",
+              name: "Khách Hàng",
+              role: "user",
+            });
+          } else {
+            reject(new Error("Email hoặc mật khẩu không chính xác!"));
+          }
+        }, 700);
+      });
+
+      // Lưu toàn bộ thông tin người dùng vào localStorage
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Chuẩn bị thông điệp chào mừng
+      const successMessage = `Đăng nhập thành công! Chào mừng ${user.name}.`;
+
+      // Điều hướng ngay lập tức và gửi thông điệp qua state
+      if (user.role === "admin") {
+        navigate("/admin/dashboard", { state: { message: successMessage } });
+      } else {
+        // Đối với user thường, bạn cũng có thể làm tương tự ở layout chính
+        navigate("/", { state: { message: successMessage } });
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function validateRegister() {

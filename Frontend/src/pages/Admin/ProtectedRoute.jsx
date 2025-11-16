@@ -4,20 +4,23 @@ import { Navigate } from "react-router-dom";
 /**
  * Component này kiểm tra xem admin đã đăng nhập hay chưa.
  * - Nếu đã đăng nhập, nó sẽ render component con (children).
- * - Nếu chưa, nó sẽ chuyển hướng về trang /admin/login.
+ * - Nếu chưa, nó sẽ chuyển hướng về trang đăng nhập.
  */
-const ProtectedRoute = ({ children }) => {
-  // Logic kiểm tra xác thực: kiểm tra giá trị trong localStorage.
-  // Trong ứng dụng thực tế, bạn nên kiểm tra một token (JWT) hợp lệ.
-  const isAdminAuthenticated =
-    localStorage.getItem("isAdminAuthenticated") === "true";
+const ProtectedRoute = ({ children, redirectTo = "/login" }) => {
+  // Lấy thông tin người dùng từ localStorage
+  const userData = localStorage.getItem("user");
+  let user = null;
+  try {
+    user = userData ? JSON.parse(userData) : null;
+  } catch (error) {
+    console.error("Lỗi khi đọc thông tin người dùng từ localStorage:", error);
+  }
 
-  // Nếu chưa xác thực, chuyển hướng đến trang đăng nhập admin
-  return isAdminAuthenticated ? (
-    children
-  ) : (
-    <Navigate to="/admin/login" replace />
-  );
+  // Kiểm tra xem người dùng có tồn tại và có vai trò là 'admin' hay không
+  const isAdmin = user && user.role === "admin";
+
+  // Nếu là admin, cho phép truy cập. Nếu không, chuyển hướng về trang đăng nhập.
+  return isAdmin ? children : <Navigate to={redirectTo} replace />;
 };
 
 export default ProtectedRoute;
