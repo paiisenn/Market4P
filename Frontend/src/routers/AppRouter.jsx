@@ -14,6 +14,7 @@ import ProductList from "../components/Admin/content/ProductList.jsx";
 import AddProduct from "../components/Admin/content/AddProduct.jsx";
 import SearchResults from "../components/Admin/Layout/SearchResults.jsx";
 import ProtectedRoute from "../pages/Admin/ProtectedRoute";
+import AllNotifications from "../components/Admin/content/AllNotifications.jsx";
 
 export default function AppRouter() {
   return (
@@ -42,6 +43,7 @@ export default function AppRouter() {
             <Route path="products" element={<ProductList />} />
             <Route path="products/add" element={<AddProduct />} />
             <Route path="search" element={<SearchResults />} />
+            <Route path="notifications" element={<AllNotifications />} />
             {/* Thêm các route con khác ở đây (customers, orders, etc.) */}
           </Route>
         </Route>

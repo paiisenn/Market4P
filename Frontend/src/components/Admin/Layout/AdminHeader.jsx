@@ -12,7 +12,14 @@ import {
   ChevronDown,
   PanelLeftClose,
   PanelLeftOpen,
+  Package,
+  Users,
+  BarChart3,
+  AlertCircle,
 } from "lucide-react";
+import { fetchNotifications, markNotificationAsRead } from "./notificationApi";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 
 // Tạo một đối tượng để ánh xạ từ đường dẫn sang tiêu đề
 const routeTitles = {
@@ -24,6 +31,7 @@ const routeTitles = {
   "/admin/dashboard/customers": "Khách hàng",
   "/admin/dashboard/inventory": "Kho",
   "/admin/dashboard/coupons": "Phiếu giảm giá",
+  "/admin/dashboard/notifications": "Tất cả thông báo",
 };
 
 // Custom hook để xử lý click bên ngoài
@@ -57,9 +65,15 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
     // Nếu không có, thì kiểm tra cài đặt của hệ thống
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
+  const [isNotificationOpen, setNotificationOpen] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [hasFetchedNotifications, setHasFetchedNotifications] = useState(false);
 
+  const notificationRef = useRef(null);
+  useClickOutside(notificationRef, () => setNotificationOpen(false));
   const profileRef = useRef(null);
   useClickOutside(profileRef, () => setProfileOpen(false));
 
@@ -79,6 +93,61 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
       localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
+
+  // Lấy thông báo khi mở dropdown
+  useEffect(() => {
+    if (isNotificationOpen && !hasFetchedNotifications) {
+      setLoadingNotifications(true);
+      fetchNotifications()
+        .then((data) => {
+          setNotifications(data);
+          setHasFetchedNotifications(true);
+        })
+        .catch((err) => console.error("Failed to fetch notifications:", err))
+        .finally(() => {
+          setLoadingNotifications(false);
+        });
+    }
+  }, [isNotificationOpen, hasFetchedNotifications]);
+
+  const handleNotificationClick = (notificationId) => {
+    // Tìm thông báo trong state hiện tại
+    const notification = notifications.find((n) => n.id === notificationId);
+
+    // Nếu thông báo tồn tại và chưa được đọc
+    if (notification && !notification.read) {
+      // Cập nhật giao diện ngay lập tức để có trải nghiệm người dùng tốt hơn
+      const updatedNotifications = notifications.map((n) =>
+        n.id === notificationId ? { ...n, read: true } : n
+      );
+      setNotifications(updatedNotifications);
+
+      // Gọi API giả để cập nhật trạng thái ở "backend"
+      markNotificationAsRead(notificationId).catch((err) => {
+        console.error("Failed to mark notification as read:", err);
+        // Có thể khôi phục lại trạng thái cũ nếu API thất bại
+        setNotifications(notifications);
+      });
+    }
+    // Bạn có thể thêm logic điều hướng ở đây nếu cần
+    // navigate(`/admin/dashboard/orders/${notification.orderId}`);
+  };
+
+  const getNotificationIcon = (type) => {
+    const iconProps = { className: "w-5 h-5" };
+    switch (type) {
+      case "order":
+        return <Package {...iconProps} />;
+      case "customer":
+        return <Users {...iconProps} />;
+      case "report":
+        return <BarChart3 {...iconProps} />;
+      case "inventory":
+        return <AlertCircle {...iconProps} />;
+      default:
+        return <Bell {...iconProps} />;
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdminAuthenticated");
@@ -168,11 +237,100 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
-          {/* Notification Bell */}
-          <button className="relative p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
-            <Bell size={20} />
-            <span className="absolute top-1 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-gray-800"></span>
-          </button>
+          {/* Notification Menu */}
+          <div className="relative" ref={notificationRef}>
+            <button
+              onClick={() => setNotificationOpen(!isNotificationOpen)}
+              className="relative p-2 cursor-pointer rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+            >
+              <Bell size={20} />
+              {/* Số lượng thông báo chưa đọc */}
+              {notifications.filter((n) => !n.read).length > 0 && (
+                <span className="absolute top-1 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-gray-800"></span>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {isNotificationOpen && (
+                <motion.div
+                  variants={dropdownVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border dark:border-gray-700 flex flex-col"
+                >
+                  <div className="p-3 font-semibold bg-amber-200 rounded-t-lg text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
+                    Thông báo
+                  </div>
+                  <div className="flex-1 max-h-80 overflow-y-auto custom-scrollbar">
+                    {loadingNotifications ? (
+                      <div className="flex justify-center items-center h-24">
+                        <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : notifications.length > 0 ? (
+                      notifications.map((notif) => (
+                        <a
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleNotificationClick(notif.id);
+                          }}
+                          key={notif.id}
+                          href="#"
+                          className="flex items-center gap-4 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        >
+                          <div className="relative shrink-0">
+                            <div
+                              className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
+                                notif.type === "order"
+                                  ? "bg-blue-300 dark:bg-blue-900/50 text-blue-500"
+                                  : notif.type === "customer"
+                                  ? "bg-green-300 dark:bg-green-900/50 text-green-500"
+                                  : notif.type === "inventory"
+                                  ? "bg-yellow-300 dark:bg-yellow-900/50 text-yellow-500"
+                                  : "bg-purple-300 dark:bg-purple-900/50 text-purple-500"
+                              }`}
+                            >
+                              {getNotificationIcon(notif.type)}
+                            </div>
+                            {!notif.read && (
+                              <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p
+                              className={`text-gray-800 dark:text-gray-100 ${
+                                !notif.read ? "font-bold" : "font-normal"
+                              }`}
+                            >
+                              {notif.message}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {formatDistanceToNow(new Date(notif.timestamp), {
+                                addSuffix: true,
+                                locale: vi, // Thêm locale tiếng Việt
+                              })}
+                            </p>
+                          </div>
+                        </a>
+                      ))
+                    ) : (
+                      <p className="text-center text-sm text-gray-500 py-4">
+                        Không có thông báo mới.
+                      </p>
+                    )}
+                  </div>
+                  <div className="border-t dark:border-gray-700">
+                    <button
+                      onClick={() => navigate("/admin/dashboard/notifications")}
+                      className="w-full text-center py-2.5 text-sm cursor-pointer rounded-b-lg font-medium text-amber-600 dark:text-amber-500 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                    >
+                      Xem tất cả thông báo
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* User Menu */}
           <div className="relative" ref={profileRef}>

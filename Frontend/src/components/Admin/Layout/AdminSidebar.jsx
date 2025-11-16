@@ -10,6 +10,7 @@ import {
   Users,
   ClipboardList,
   Ticket,
+  Bell,
 } from "lucide-react";
 
 const NavItem = ({ to, icon, children, end = false, isSidebarOpen }) => {
@@ -158,6 +159,13 @@ function AdminSidebar({ isSidebarOpen }) {
               isSidebarOpen={isSidebarOpen}
             >
               Phiếu giảm giá
+            </NavItem>
+            <NavItem
+              to="/admin/dashboard/notifications"
+              icon={<Bell size={18} />}
+              isSidebarOpen={isSidebarOpen}
+            >
+              Thông báo
             </NavItem>
           </div>
         </nav>
