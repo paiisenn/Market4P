@@ -252,7 +252,7 @@ function AllNotifications() {
                 </div>
                 <button
                   onClick={() => handleDeleteNotification(notif.id)}
-                  className="absolute top-2 right-2 p-1 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/50 opacity-0 group-hover:opacity-100 transition-all"
+                  className="absolute top-2 right-2 p-1 rounded-full cursor-pointer text-gray-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/50 opacity-0 group-hover:opacity-100 transition-all"
                 >
                   <Trash2 size={16} />
                 </button>

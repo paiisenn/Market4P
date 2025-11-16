@@ -20,6 +20,7 @@ import {
 import { fetchNotifications, markNotificationAsRead } from "./notificationApi";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import adminAvatar from "../../../assets/images/admin-avatar.jpg";
 
 // Tạo một đối tượng để ánh xạ từ đường dẫn sang tiêu đề
 const routeTitles = {
@@ -339,7 +340,7 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
               className="flex items-center gap-2 focus:outline-none"
             >
               <img
-                src="https://i.pravatar.cc/40" // Placeholder avatar
+                src={adminAvatar}
                 alt="Admin Avatar"
                 className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
               />
