@@ -11,6 +11,8 @@ import {
   ClipboardList,
   Ticket,
   Bell,
+  User,
+  Settings,
 } from "lucide-react";
 
 const NavItem = ({ to, icon, children, end = false, isSidebarOpen }) => {
@@ -64,7 +66,7 @@ function AdminSidebar({ isSidebarOpen }) {
 
   return (
     <aside className={sidebarClasses}>
-      <div className="flex flex-col h-full overflow-y-auto overflow-x-hidden custom-scrollbar">
+      <div className="flex flex-col h-full overflow-x-hidden">
         <div
           className={`
             flex flex-col items-center justify-center border-b border-gray-700 transition-all duration-300 shrink-0
@@ -81,94 +83,125 @@ function AdminSidebar({ isSidebarOpen }) {
             Bảng quản trị
           </p>
         </div>
-        <nav
-          className={`
-            flex-1 pt-2 pb-4 transition-all duration-300
-            ${isSidebarOpen ? "px-4" : "px-2"}
-          `}
-        >
-          <div className="space-y-1">
-            <NavItem
-              to="/admin/dashboard"
-              icon={<LayoutDashboard size={18} />}
-              end
-              isSidebarOpen={isSidebarOpen}
-            >
-              Bảng điều khiển
-            </NavItem>
-          </div>
+        {/* Vùng chứa có thể cuộn cho các mục menu */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <nav
+            className={`
+              pt-2 pb-4 transition-all duration-300
+              ${isSidebarOpen ? "px-4" : "px-2"}
+            `}
+          >
+            <div className="space-y-1">
+              <NavItem
+                to="/admin/dashboard"
+                icon={<LayoutDashboard size={18} />}
+                end
+                isSidebarOpen={isSidebarOpen}
+              >
+                Bảng điều khiển
+              </NavItem>
+            </div>
 
-          <div className="mt-4">
-            <h3
-              className={`
+            <div className="mt-4">
+              <h3
+                className={`
             pb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase transition-all duration-300 overflow-hidden whitespace-nowrap
             ${isSidebarOpen ? "px-4" : "text-center px-2"}
           `}
-            >
-              {isSidebarOpen ? "Quản lý" : "•••"}
-            </h3>
-          </div>
+              >
+                {isSidebarOpen ? "Quản lý" : "•••"}
+              </h3>
+            </div>
 
-          <div className="space-y-1">
-            <NavItem
-              to="/admin/dashboard/products"
-              icon={<Apple size={18} />}
-              end
-              isSidebarOpen={isSidebarOpen}
-            >
-              Tất cả trái cây
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/products/add"
-              icon={<PlusCircle size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Thêm trái cây
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/categories"
-              icon={<Tags size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Danh mục
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/orders"
-              icon={<Package size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Đơn hàng
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/customers"
-              icon={<Users size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Khách hàng
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/inventory"
-              icon={<ClipboardList size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Kho
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/coupons"
-              icon={<Ticket size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Phiếu giảm giá
-            </NavItem>
-            <NavItem
-              to="/admin/dashboard/notifications"
-              icon={<Bell size={18} />}
-              isSidebarOpen={isSidebarOpen}
-            >
-              Thông báo
-            </NavItem>
-          </div>
-        </nav>
+            <div className="space-y-1">
+              <NavItem
+                to="/admin/dashboard/products"
+                icon={<Apple size={18} />}
+                end
+                isSidebarOpen={isSidebarOpen}
+              >
+                Tất cả trái cây
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/products/add"
+                icon={<PlusCircle size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Thêm trái cây
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/categories"
+                icon={<Tags size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Danh mục
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/orders"
+                icon={<Package size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Đơn hàng
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/customers"
+                icon={<Users size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Khách hàng
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/inventory"
+                icon={<ClipboardList size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Kho
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/coupons"
+                icon={<Ticket size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Phiếu giảm giá
+              </NavItem>
+            </div>
+
+            <div className="mt-4">
+              <h3
+                className={`
+            pb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase transition-all duration-300 overflow-hidden whitespace-nowrap
+            ${isSidebarOpen ? "px-4" : "text-center px-2"}
+          `}
+              >
+                {isSidebarOpen ? "Cá nhân" : "•••"}
+              </h3>
+            </div>
+
+            <div className="space-y-1">
+              <NavItem
+                to="/admin/dashboard/notifications"
+                icon={<Bell size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Thông báo
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/profile"
+                icon={<User size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Hồ sơ
+              </NavItem>
+              <NavItem
+                to="/admin/dashboard/settings"
+                icon={<Settings size={18} />}
+                isSidebarOpen={isSidebarOpen}
+              >
+                Cài đặt
+              </NavItem>
+            </div>
+          </nav>
+        </div>
       </div>
     </aside>
   );

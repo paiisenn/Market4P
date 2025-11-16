@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
@@ -17,10 +18,13 @@ import {
   BarChart3,
   AlertCircle,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import { fetchNotifications, markNotificationAsRead } from "./notificationApi";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import { useTheme } from "../Layout/ThemeContext";
 import adminAvatar from "../../../assets/images/admin-avatar.jpg";
+import ConfirmationModal from "./ConfirmationModal";
 
 // Tạo một đối tượng để ánh xạ từ đường dẫn sang tiêu đề
 const routeTitles = {
@@ -33,6 +37,8 @@ const routeTitles = {
   "/admin/dashboard/inventory": "Kho",
   "/admin/dashboard/coupons": "Phiếu giảm giá",
   "/admin/dashboard/notifications": "Tất cả thông báo",
+  "/admin/dashboard/profile": "Hồ sơ của tôi",
+  "/admin/dashboard/settings": "Cài đặt",
 };
 
 // Custom hook để xử lý click bên ngoài
@@ -57,21 +63,14 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [title, setTitle] = useState("Bảng điều khiển");
-  const [isDarkMode, setDarkMode] = useState(() => {
-    const saveTheme = localStorage.getItem("theme");
-    if (saveTheme) {
-      return saveTheme === "dark";
-    }
-
-    // Nếu không có, thì kiểm tra cài đặt của hệ thống
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const { theme, toggleTheme } = useTheme();
   const [isNotificationOpen, setNotificationOpen] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [hasFetchedNotifications, setHasFetchedNotifications] = useState(false);
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const notificationRef = useRef(null);
   useClickOutside(notificationRef, () => setNotificationOpen(false));
@@ -83,17 +82,6 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
     const currentTitle = routeTitles[location.pathname] || "Bảng điều khiển";
     setTitle(currentTitle);
   }, [location.pathname]);
-
-  // Xử lý Dark Mode
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
 
   // Lấy thông báo khi mở dropdown
   useEffect(() => {
@@ -151,8 +139,18 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
   };
 
   const handleLogout = () => {
+    setProfileOpen(false);
+    setLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
+    // Đóng modal
+    setLogoutModalOpen(false);
+    // Thực hiện đăng xuất
     localStorage.removeItem("isAdminAuthenticated");
-    navigate("/admin/login");
+    toast.success("Đăng xuất thành công!");
+    // Chuyển hướng về trang đăng nhập với thông báo
+    navigate("/login", { state: { message: "Bạn đã đăng xuất." } });
   };
 
   const handleSearch = (e) => {
@@ -181,214 +179,232 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md p-4 z-10 transition-colors duration-300">
-      <div className="flex justify-between items-center w-full">
-        {/* Left Side */}
-        <div className="flex items-center gap-4">
-          {/* Hamburger Menu */}
-          <button
-            onClick={() => setSidebarOpen((prev) => !prev)}
-            className="text-gray-600 dark:text-gray-300 cursor-pointer hover:text-amber-600 transition-colors duration-300 dark:hover:text-white focus:outline-none relative w-6 h-6"
-          >
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={isSidebarOpen ? "close" : "open"}
-                initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.2 }}
-                className="absolute inset-0"
-              >
-                {isSidebarOpen ? (
-                  <PanelLeftClose size={26} />
-                ) : (
-                  <PanelLeftOpen size={26} />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </button>
-          {/* Page Title */}
-          <h2 className="hidden md:block text-xl font-semibold text-gray-700 dark:text-gray-200">
-            {title}
-          </h2>
-        </div>
-
-        {/* Right Side */}
-        <div className="flex items-center gap-3 sm:gap-5">
-          {/* Search Bar */}
-          <div className="relative hidden sm:block">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <Search className="text-gray-400 dark:text-gray-500" size={20} />
-            </span>
-            <input
-              type="text"
-              placeholder="Tìm kiếm..."
-              className="w-full max-w-xs py-2 pl-10 pr-4 text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-200 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-300"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearch}
-            />
-          </div>
-
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={() => setDarkMode(!isDarkMode)}
-            className="p-2 rounded-full text-gray-600 cursor-pointer dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
-          >
-            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-
-          {/* Notification Menu */}
-          <div className="relative" ref={notificationRef}>
+    <>
+      <ConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        title="Xác nhận đăng xuất"
+        message="Bạn có chắc chắn muốn kết thúc phiên làm việc này không?"
+        confirmText="Đăng xuất"
+      />
+      <header className="bg-white dark:bg-gray-800 shadow-md p-4 z-10 transition-colors duration-300">
+        <div className="flex justify-between items-center w-full">
+          {/* Left Side */}
+          <div className="flex items-center gap-4">
+            {/* Hamburger Menu */}
             <button
-              onClick={() => setNotificationOpen(!isNotificationOpen)}
-              className="relative p-2 cursor-pointer rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+              onClick={() => setSidebarOpen((prev) => !prev)}
+              className="text-gray-600 dark:text-gray-300 cursor-pointer hover:text-amber-600 transition-colors duration-300 dark:hover:text-white focus:outline-none relative w-6 h-6"
             >
-              <Bell size={20} />
-              {/* Số lượng thông báo chưa đọc */}
-              {notifications.filter((n) => !n.read).length > 0 && (
-                <span className="absolute top-1 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-gray-800"></span>
-              )}
-            </button>
-
-            <AnimatePresence>
-              {isNotificationOpen && (
+              <AnimatePresence initial={false}>
                 <motion.div
-                  variants={dropdownVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border dark:border-gray-700 flex flex-col"
+                  key={isSidebarOpen ? "close" : "open"}
+                  initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-0"
                 >
-                  <div className="p-3 font-semibold bg-amber-200 rounded-t-lg text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
-                    Thông báo
-                  </div>
-                  <div className="flex-1 max-h-80 overflow-y-auto custom-scrollbar">
-                    {loadingNotifications ? (
-                      <div className="flex justify-center items-center h-24">
-                        <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                      </div>
-                    ) : notifications.length > 0 ? (
-                      notifications.map((notif) => (
-                        <a
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleNotificationClick(notif.id);
-                          }}
-                          key={notif.id}
-                          href="#"
-                          className="flex items-center gap-4 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                        >
-                          <div className="relative shrink-0">
-                            <div
-                              className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
-                                notif.type === "order"
-                                  ? "bg-blue-300 dark:bg-blue-900/50 text-blue-500"
-                                  : notif.type === "customer"
-                                  ? "bg-green-300 dark:bg-green-900/50 text-green-500"
-                                  : notif.type === "inventory"
-                                  ? "bg-yellow-300 dark:bg-yellow-900/50 text-yellow-500"
-                                  : "bg-purple-300 dark:bg-purple-900/50 text-purple-500"
-                              }`}
-                            >
-                              {getNotificationIcon(notif.type)}
-                            </div>
-                            {!notif.read && (
-                              <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <p
-                              className={`text-gray-800 dark:text-gray-100 ${
-                                !notif.read ? "font-bold" : "font-normal"
-                              }`}
-                            >
-                              {notif.message}
-                            </p>
-                            <p className="text-xs text-gray-400 mt-1">
-                              {formatDistanceToNow(new Date(notif.timestamp), {
-                                addSuffix: true,
-                                locale: vi, // Thêm locale tiếng Việt
-                              })}
-                            </p>
-                          </div>
-                        </a>
-                      ))
-                    ) : (
-                      <p className="text-center text-sm text-gray-500 py-4">
-                        Không có thông báo mới.
-                      </p>
-                    )}
-                  </div>
-                  <div className="border-t dark:border-gray-700">
-                    <button
-                      onClick={() => navigate("/admin/dashboard/notifications")}
-                      className="w-full text-center py-2.5 text-sm cursor-pointer rounded-b-lg font-medium text-amber-600 dark:text-amber-500 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200"
-                    >
-                      Xem tất cả thông báo
-                    </button>
-                  </div>
+                  {isSidebarOpen ? (
+                    <PanelLeftClose size={26} />
+                  ) : (
+                    <PanelLeftOpen size={26} />
+                  )}
                 </motion.div>
-              )}
-            </AnimatePresence>
+              </AnimatePresence>
+            </button>
+            {/* Page Title */}
+            <h2 className="hidden md:block text-xl font-semibold text-gray-700 dark:text-gray-200">
+              {title}
+            </h2>
           </div>
 
-          {/* User Menu */}
-          <div className="relative" ref={profileRef}>
-            <button
-              onClick={() => setProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2 focus:outline-none"
-            >
-              <img
-                src={adminAvatar}
-                alt="Admin Avatar"
-                className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-              />
-              <div className="hidden lg:flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-300">
-                <span>Admin</span>
-                <ChevronDown
-                  size={16}
-                  className={`ml-1 transition-transform duration-200 ${
-                    isProfileOpen ? "rotate-180" : ""
-                  }`}
+          {/* Right Side */}
+          <div className="flex items-center gap-3 sm:gap-5">
+            {/* Search Bar */}
+            <div className="relative hidden sm:block">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <Search
+                  className="text-gray-400 dark:text-gray-500"
+                  size={20}
                 />
-              </div>
+              </span>
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                className="w-full max-w-xs py-2 pl-10 pr-4 text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-200 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-300"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
+              />
+            </div>
+
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full text-gray-600 cursor-pointer dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+            >
+              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
             </button>
 
-            <AnimatePresence>
-              {isProfileOpen && (
-                <motion.div
-                  variants={dropdownVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden border dark:border-gray-700 transition-colors duration-300"
-                >
-                  <a
-                    href="#profile"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+            {/* Notification Menu */}
+            <div className="relative" ref={notificationRef}>
+              <button
+                onClick={() => setNotificationOpen(!isNotificationOpen)}
+                className="relative p-2 cursor-pointer rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+              >
+                <Bell size={20} />
+                {/* Số lượng thông báo chưa đọc */}
+                {notifications.filter((n) => !n.read).length > 0 && (
+                  <span className="absolute top-1 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-gray-800"></span>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {isNotificationOpen && (
+                  <motion.div
+                    variants={dropdownVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border dark:border-gray-700 flex flex-col"
                   >
-                    <User size={16} /> Hồ sơ
-                  </a>
-                  <a
-                    href="#settings"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+                    <div className="p-3 font-semibold bg-amber-200 rounded-t-lg text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
+                      Thông báo
+                    </div>
+                    <div className="flex-1 max-h-80 overflow-y-auto custom-scrollbar">
+                      {loadingNotifications ? (
+                        <div className="flex justify-center items-center h-24">
+                          <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      ) : notifications.length > 0 ? (
+                        notifications.map((notif) => (
+                          <a
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNotificationClick(notif.id);
+                            }}
+                            key={notif.id}
+                            href="#"
+                            className="flex items-center gap-4 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                          >
+                            <div className="relative shrink-0">
+                              <div
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
+                                  notif.type === "order"
+                                    ? "bg-blue-300 dark:bg-blue-900/50 text-blue-500"
+                                    : notif.type === "customer"
+                                    ? "bg-green-300 dark:bg-green-900/50 text-green-500"
+                                    : notif.type === "inventory"
+                                    ? "bg-yellow-300 dark:bg-yellow-900/50 text-yellow-500"
+                                    : "bg-purple-300 dark:bg-purple-900/50 text-purple-500"
+                                }`}
+                              >
+                                {getNotificationIcon(notif.type)}
+                              </div>
+                              {!notif.read && (
+                                <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <p
+                                className={`text-gray-800 dark:text-gray-100 ${
+                                  !notif.read ? "font-bold" : "font-normal"
+                                }`}
+                              >
+                                {notif.message}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {formatDistanceToNow(
+                                  new Date(notif.timestamp),
+                                  {
+                                    addSuffix: true,
+                                    locale: vi, // Thêm locale tiếng Việt
+                                  }
+                                )}
+                              </p>
+                            </div>
+                          </a>
+                        ))
+                      ) : (
+                        <p className="text-center text-sm text-gray-500 py-4">
+                          Không có thông báo mới.
+                        </p>
+                      )}
+                    </div>
+                    <div className="border-t dark:border-gray-700">
+                      <button
+                        onClick={() =>
+                          navigate("/admin/dashboard/notifications")
+                        }
+                        className="w-full text-center py-2.5 text-sm cursor-pointer rounded-b-lg font-medium text-amber-600 dark:text-amber-500 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                      >
+                        Xem tất cả thông báo
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* User Menu */}
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen(!isProfileOpen)}
+                className="flex items-center cursor-pointer focus:ring-1 focus:ring-gray-500 rounded-lg gap-2 focus:outline-none"
+              >
+                <img
+                  src={adminAvatar}
+                  alt="Admin Avatar"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
+                />
+                <div className="hidden lg:flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-300">
+                  <span>Admin</span>
+                  <ChevronDown
+                    size={16}
+                    className={`ml-1 transition-transform duration-200 ${
+                      isProfileOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+              </button>
+
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div
+                    variants={dropdownVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden border dark:border-gray-700 transition-colors duration-300"
                   >
-                    <Settings size={16} /> Cài đặt
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors duration-300"
-                  >
-                    <LogOut size={16} /> Đăng xuất
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    <NavLink
+                      to="/admin/dashboard/profile"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+                    >
+                      <User size={16} /> Hồ sơ
+                    </NavLink>
+                    <NavLink
+                      to="/admin/dashboard/settings"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+                    >
+                      <Settings size={16} /> Cài đặt
+                    </NavLink>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center cursor-pointer gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors duration-300"
+                    >
+                      <LogOut size={16} /> Đăng xuất
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
 

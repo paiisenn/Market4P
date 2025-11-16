@@ -8,6 +8,7 @@ import Contact from "../pages/Contact/Contact";
 import Checkout from "../pages/Checkout/Checkout";
 import Shop from "../pages/Shop/Shop";
 
+// Admin Components and Pages
 import AdminDashboard from "../pages/Admin/Dashboard";
 import DashboardHome from "../components/Admin/content/DashboardHome.jsx";
 import ProductList from "../components/Admin/content/ProductList.jsx";
@@ -15,6 +16,8 @@ import AddProduct from "../components/Admin/content/AddProduct.jsx";
 import SearchResults from "../components/Admin/Layout/SearchResults.jsx";
 import ProtectedRoute from "../pages/Admin/ProtectedRoute";
 import AllNotifications from "../components/Admin/content/AllNotifications.jsx";
+import AdminProfile from "../components/Admin/content/AdminProfile.jsx";
+import AdminSettings from "../components/Admin/content/AdminSettings.jsx";
 
 export default function AppRouter() {
   return (
@@ -48,6 +51,8 @@ export default function AppRouter() {
             <Route path="products/add" element={<AddProduct />} />
             <Route path="search" element={<SearchResults />} />
             <Route path="notifications" element={<AllNotifications />} />
+            <Route path="profile" element={<AdminProfile />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Route>
       </Routes>
