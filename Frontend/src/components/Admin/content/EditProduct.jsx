@@ -1,20 +1,22 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   UploadCloud,
   Save,
   X,
-  PackagePlus,
+  Edit,
   Type,
   Tags,
   CircleDollarSign,
   Warehouse,
   FileText,
+  Frown,
   Activity,
 } from "lucide-react";
 import toast from "react-hot-toast";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { mockProducts } from "../Layout/mockProducts";
 
 // Giả lập danh sách danh mục, trong thực tế sẽ lấy từ API
 const categories = [
@@ -61,19 +63,22 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
 };
 
-function AddProduct() {
+function EditProduct() {
   const navigate = useNavigate();
-  const [product, setProduct] = useState({
-    name: "",
-    category: "",
-    price: "",
-    stock: "",
-    description: "",
-    status: "Còn hàng", // Thêm trạng thái mặc định
-  });
+  const { productId } = useParams(); // Lấy ID sản phẩm từ URL
+  const [product, setProduct] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    // Giả lập việc fetch dữ liệu sản phẩm bằng ID
+    const productToEdit = mockProducts.find((p) => p.id === productId);
+    if (productToEdit) {
+      setProduct(productToEdit);
+      setImagePreview(productToEdit.img); // Hiển thị ảnh hiện tại
+    }
+  }, [productId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -104,39 +109,54 @@ function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validate form
     if (
       !product.name ||
       !product.category ||
       !product.price ||
-      !product.stock ||
       !product.status
     ) {
-      toast.error("Vui lòng điền đầy đủ các trường bắt buộc!");
+      toast.error("Vui lòng điền đầy đủ các trường bắt buộc.");
       return;
     }
-    if (!imageFile) {
-      toast.error("Vui lòng tải lên hình ảnh sản phẩm!");
+    if (!imagePreview) {
+      toast.error("Vui lòng tải lên hình ảnh sản phẩm.");
       return;
     }
 
-    // Giả lập quá trình lưu
+    // Giả lập quá trình cập nhật
     const promise = new Promise((resolve) => {
       setTimeout(() => {
-        console.log("Đã lưu sản phẩm:", { ...product, image: imageFile.name });
+        console.log("Đã cập nhật sản phẩm:", {
+          ...product,
+          image: imageFile ? imageFile.name : " giữ nguyên",
+        });
         resolve();
       }, 1500);
     });
 
     toast.promise(promise, {
-      loading: "Đang thêm sản phẩm...",
+      loading: "Đang cập nhật sản phẩm...",
       success: () => {
         navigate("/admin/dashboard/products");
-        return <b>Sản phẩm đã được thêm thành công!</b>;
+        return <b>Sản phẩm đã được cập nhật thành công!</b>;
       },
-      error: <b>Không thể thêm sản phẩm.</b>,
+      error: <b>Không thể cập nhật sản phẩm.</b>,
     });
   };
+
+  if (!product) {
+    return (
+      <div className="text-center py-10 px-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <Frown className="mx-auto h-12 w-12 text-gray-400" />
+        <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-200">
+          Không tìm thấy sản phẩm
+        </h3>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Sản phẩm với ID "{productId}" không tồn tại hoặc đã bị xóa.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -150,8 +170,8 @@ function AddProduct() {
           variants={itemVariants}
           className="text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-3"
         >
-          <PackagePlus size={30} />
-          Thêm trái cây mới
+          <Edit size={30} />
+          Chỉnh sửa sản phẩm trái cây
         </motion.h2>
       </div>
 
@@ -352,7 +372,7 @@ function AddProduct() {
                   id="description"
                   name="description"
                   rows="5"
-                  value={product.description}
+                  value={product.description || ""}
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-3 py-2 transition duration-200 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-amber-500"
                   placeholder="Mô tả chi tiết về sản phẩm, nguồn gốc, đặc điểm..."
@@ -375,7 +395,7 @@ function AddProduct() {
             type="submit"
             className="flex items-center cursor-pointer gap-2 px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
           >
-            <Save size={16} /> Lưu sản phẩm
+            <Save size={16} /> Lưu thay đổi
           </button>
         </div>
       </motion.form>
@@ -383,4 +403,4 @@ function AddProduct() {
   );
 }
 
-export default AddProduct;
+export default EditProduct;

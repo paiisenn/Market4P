@@ -18,6 +18,7 @@ import ProtectedRoute from "../pages/Admin/ProtectedRoute";
 import AllNotifications from "../components/Admin/content/AllNotifications.jsx";
 import AdminProfile from "../components/Admin/content/AdminProfile.jsx";
 import AdminSettings from "../components/Admin/content/AdminSettings.jsx";
+import EditProduct from "../components/Admin/content/EditProduct.jsx";
 
 export default function AppRouter() {
   return (
@@ -53,6 +54,7 @@ export default function AppRouter() {
             <Route path="notifications" element={<AllNotifications />} />
             <Route path="profile" element={<AdminProfile />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="products/edit/:productId" element={<EditProduct />} />
           </Route>
         </Route>
       </Routes>

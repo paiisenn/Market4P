@@ -79,7 +79,12 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
 
   // Sử dụng useEffect để cập nhật tiêu đề mỗi khi đường dẫn thay đổi
   useEffect(() => {
-    const currentTitle = routeTitles[location.pathname] || "Bảng điều khiển";
+    let currentTitle = "Bảng điều khiển";
+    if (location.pathname.startsWith("/admin/dashboard/products/edit/")) {
+      currentTitle = "Chỉnh sửa sản phẩm trái cây";
+    } else {
+      currentTitle = routeTitles[location.pathname] || "Bảng điều khiển";
+    }
     setTitle(currentTitle);
   }, [location.pathname]);
 

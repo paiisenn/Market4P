@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
   Filter,
@@ -8,138 +10,17 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  X,
 } from "lucide-react";
+import ConfirmationModal from "../Layout/ConfirmationModal";
 
 // --- Dữ liệu giả lập ---
 // Trong ứng dụng thực tế, dữ liệu này sẽ được lấy từ API.
-const mockProducts = [
-  {
-    id: "SP001",
-    name: "Táo Envy New Zealand",
-    img: "https://via.placeholder.com/80x80.png?text=Táo+Envy",
-    category: "Táo & Lê",
-    price: 250000,
-    stock: 120,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP002",
-    name: "Cam Vàng Navel Úc",
-    img: "https://via.placeholder.com/80x80.png?text=Cam+Navel",
-    category: "Họ Cam Quýt",
-    price: 180000,
-    stock: 80,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP003",
-    name: "Dâu Tây Hàn Quốc",
-    img: "https://via.placeholder.com/80x80.png?text=Dâu+Tây",
-    category: "Quả Mọng",
-    price: 450000,
-    stock: 8,
-    status: "Sắp hết hàng",
-  },
-  {
-    id: "SP004",
-    name: "Nho Xanh không hạt Mỹ",
-    img: "https://via.placeholder.com/80x80.png?text=Nho+Xanh",
-    category: "Quả Mọng",
-    price: 320000,
-    stock: 50,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP005",
-    name: "Xoài Cát Hòa Lộc",
-    img: "https://via.placeholder.com/80x80.png?text=Xoài+Cát",
-    category: "Trái cây nhiệt đới",
-    price: 90000,
-    stock: 0,
-    status: "Hết hàng",
-  },
-  {
-    id: "SP006",
-    name: "Kiwi Vàng New Zealand",
-    img: "https://via.placeholder.com/80x80.png?text=Kiwi",
-    category: "Trái cây nhiệt đới",
-    price: 150000,
-    stock: 75,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP007",
-    name: "Lê Nam Phi",
-    img: "https://via.placeholder.com/80x80.png?text=Lê+Nam+Phi",
-    category: "Táo & Lê",
-    price: 110000,
-    stock: 90,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP008",
-    name: "Việt Quất Chile",
-    img: "https://via.placeholder.com/80x80.png?text=Việt+Quất",
-    category: "Quả Mọng",
-    price: 380000,
-    stock: 30,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP009",
-    name: "Bưởi Da Xanh",
-    img: "https://via.placeholder.com/80x80.png?text=Bưởi",
-    category: "Họ Cam Quýt",
-    price: 60000,
-    stock: 4,
-    status: "Sắp hết hàng",
-  },
-  {
-    id: "SP010",
-    name: "Sầu Riêng Ri6",
-    img: "https://via.placeholder.com/80x80.png?text=Sầu+Riêng",
-    category: "Trái cây nhiệt đới",
-    price: 220000,
-    stock: 0,
-    status: "Hết hàng",
-  },
-  {
-    id: "SP011",
-    name: "Cherry Mỹ",
-    img: "https://via.placeholder.com/80x80.png?text=Cherry",
-    category: "Quả Mọng",
-    price: 550000,
-    stock: 45,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP012",
-    name: "Dưa Hấu Không Hạt",
-    img: "https://via.placeholder.com/80x80.png?text=Dưa+Hấu",
-    category: "Trái cây nhiệt đới",
-    price: 50000,
-    stock: 150,
-    status: "Còn hàng",
-  },
-  {
-    id: "SP013",
-    name: "Măng Cụt Lái Thiêu",
-    img: "https://via.placeholder.com/80x80.png?text=Măng+Cụt",
-    category: "Trái cây nhiệt đới",
-    price: 120000,
-    stock: 0,
-    status: "Hết hàng",
-  },
-  {
-    id: "SP014",
-    name: "Vải Thiều Bắc Giang",
-    img: "https://via.placeholder.com/80x80.png?text=Vải+Thiều",
-    category: "Trái cây nhiệt đới",
-    price: 85000,
-    stock: 5,
-    status: "Sắp hết hàng",
-  },
-];
+import { mockProducts } from "../Layout/mockProducts";
+
+// --- Hằng số cho bộ lọc ---
+const categories = ["Tất cả", ...new Set(mockProducts.map((p) => p.category))];
+const statuses = ["Tất cả", ...new Set(mockProducts.map((p) => p.status))];
 
 // Hàm helper để lấy class cho badge trạng thái
 const getStatusBadge = (status) => {
@@ -170,20 +51,69 @@ const itemVariants = {
 
 function ProductList() {
   const navigate = useNavigate();
-  // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState(mockProducts);
+  const [filters, setFilters] = useState({
+    category: "Tất cả",
+    status: "Tất cả",
+  });
+  const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Số sản phẩm mỗi trang
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+    setCurrentPage(1); // Reset về trang đầu khi thay đổi bộ lọc
+  };
+
+  // Lọc sản phẩm dựa trên state `filters`
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const categoryMatch =
+        filters.category === "Tất cả" || product.category === filters.category;
+      const statusMatch =
+        filters.status === "Tất cả" || product.status === filters.status;
+      return categoryMatch && statusMatch;
+    });
+  }, [products, filters]);
 
   // Logic phân trang
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   const paginate = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
+  };
+
+  // Logic xóa sản phẩm
+  const handleDeleteClick = (product) => {
+    setProductToDelete(product);
+    setDeleteModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setDeleteModalOpen(false);
+    setProductToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (productToDelete) {
+      // Giả lập xóa sản phẩm
+      // Cập nhật UI trước để có trải nghiệm mượt mà
+      setProducts((prevProducts) =>
+        prevProducts.filter((p) => p.id !== productToDelete.id)
+      );
+      toast.success(`Sản phẩm "${productToDelete.name}" đã được xóa.`);
+      handleCloseModal();
+    }
   };
 
   return (
@@ -193,25 +123,94 @@ function ProductList() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        title="Xác nhận xóa sản phẩm"
+        message={`Bạn có chắc chắn muốn xóa sản phẩm "${productToDelete?.name}" không? Hành động này không thể hoàn tác.`}
+        confirmText="Xóa"
+      />
       {/* Header */}
       <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
           Tất cả trái cây
         </h1>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border rounded-lg hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center cursor-pointer transition-colors duration-200 gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border rounded-lg hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+          >
             <Filter size={16} />
             Bộ lọc
           </button>
           <button
             onClick={() => navigate("/admin/dashboard/products/add")}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600"
+            className="flex items-center cursor-pointer transition-colors duration-200 gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600"
           >
             <Plus size={16} />
             Thêm mới
           </button>
         </div>
       </div>
+
+      {/* Khu vực bộ lọc */}
+      <AnimatePresence>
+        {showFilters && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6 overflow-hidden"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div>
+                <label
+                  htmlFor="category-filter"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Danh mục
+                </label>
+                <select
+                  id="category-filter"
+                  name="category"
+                  value={filters.category}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="status-filter"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Trạng thái
+                </label>
+                <select
+                  id="status-filter"
+                  name="status"
+                  value={filters.status}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  {statuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bảng sản phẩm */}
       <motion.div
@@ -250,48 +249,77 @@ function ProductList() {
               initial="hidden"
               animate="visible"
             >
-              {currentProducts.map((product) => (
-                <motion.tr
-                  key={product.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  variants={itemVariants}
-                >
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={product.img}
-                        alt={product.name}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
-                      <span>{product.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">{product.category}</td>
-                  <td className="px-6 py-4">
-                    {product.price.toLocaleString("vi-VN")}
-                  </td>
-                  <td className="px-6 py-4 text-center">{product.stock}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
-                        product.status
-                      )}`}
+              <AnimatePresence>
+                {currentProducts.length > 0 ? (
+                  currentProducts.map((product) => (
+                    <motion.tr
+                      layout
+                      key={product.id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      variants={itemVariants}
+                      exit={{
+                        opacity: 0,
+                        x: -50,
+                        transition: { duration: 0.3 },
+                      }}
                     >
-                      {product.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-center items-center gap-2">
-                      <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 transition-colors">
-                        <Edit size={18} />
-                      </button>
-                      <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 transition-colors">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
+                      <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <div className="flex items-center gap-4">
+                          <img
+                            src={product.img}
+                            alt={product.name}
+                            className="w-12 h-12 rounded-lg object-cover"
+                          />
+                          <span>{product.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">{product.category}</td>
+                      <td className="px-6 py-4">
+                        {product.price.toLocaleString("vi-VN")}
+                      </td>
+                      <td className="px-6 py-4 text-center">{product.stock}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
+                            product.status
+                          )}`}
+                        >
+                          {product.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center items-center gap-2">
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/admin/dashboard/products/edit/${product.id}`
+                              )
+                            }
+                            className="p-2 rounded-full cursor-pointer duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 transition-colors"
+                          >
+                            <Edit size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(product)}
+                            className="p-2 rounded-full cursor-pointer duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 transition-colors"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <motion.tr>
+                    <td
+                      colSpan="6"
+                      className="text-center py-10 text-gray-500 dark:text-gray-400"
+                    >
+                      Không tìm thấy sản phẩm nào phù hợp.
+                    </td>
+                  </motion.tr>
+                )}
+              </AnimatePresence>
             </motion.tbody>
           </table>
         </div>
@@ -302,7 +330,7 @@ function ProductList() {
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+              className="flex items-center cursor-pointer duration-200 gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
             >
               <ChevronLeft size={16} />
               Trang trước
@@ -316,7 +344,7 @@ function ProductList() {
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+              className="flex items-center cursor-pointer duration-200 gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
             >
               Trang sau
               <ChevronRight size={16} />
