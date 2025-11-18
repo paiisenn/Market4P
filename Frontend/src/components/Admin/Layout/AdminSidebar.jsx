@@ -130,13 +130,6 @@ function AdminSidebar({ isSidebarOpen }) {
                 Thêm trái cây
               </NavItem>
               <NavItem
-                to="/admin/dashboard/categories"
-                icon={<Tags size={18} />}
-                isSidebarOpen={isSidebarOpen}
-              >
-                Danh mục
-              </NavItem>
-              <NavItem
                 to="/admin/dashboard/orders"
                 icon={<Package size={18} />}
                 isSidebarOpen={isSidebarOpen}

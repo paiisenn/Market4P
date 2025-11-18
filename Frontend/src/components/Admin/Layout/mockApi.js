@@ -1,92 +1,212 @@
-// Đây là file để giả lập API, cung cấp dữ liệu mẫu và các hàm tương tác.
+// --- Dữ liệu giả lập ---
+// Trong ứng dụng thực tế, dữ liệu này sẽ được lấy từ API.
 
-const mockProducts = [
+export const mockProducts = [
   {
-    id: 1,
-    name: "Táo Fuji Nhật Bản",
-    category: "Trái cây nhập khẩu",
-    price: 89000,
-    stock: 150,
-  },
-  {
-    id: 2,
-    name: "Nho Xanh không hạt Mỹ",
-    category: "Trái cây nhập khẩu",
-    price: 120000,
-    stock: 80,
-  },
-  {
-    id: 3,
-    name: "Xoài Cát Hòa Lộc",
-    category: "Trái cây nội địa",
-    price: 65000,
-    stock: 200,
-  },
-  {
-    id: 4,
-    name: "Dưa hấu Sài Gòn",
-    category: "Trái cây nội địa",
-    price: 25000,
-    stock: 300,
-  },
-  {
-    id: 5,
-    name: "Cam Sành Bến Tre",
-    category: "Trái cây nội địa",
-    price: 40000,
-    stock: 120,
-  },
-  {
-    id: 6,
-    name: "Dâu tây Đà Lạt",
-    category: "Trái cây nội địa",
-    price: 180000,
-    stock: 50,
-  },
-  {
-    id: 7,
-    name: "Kiwi Vàng New Zealand",
-    category: "Trái cây nhập khẩu",
-    price: 150000,
-    stock: 70,
-  },
-  {
-    id: 8,
-    name: "Sầu riêng Ri6",
-    category: "Trái cây nội địa",
+    id: "SP001",
+    name: "Táo Envy New Zealand",
+    img: "https://via.placeholder.com/80x80.png?text=Táo+Envy",
+    category: "Táo & Lê",
     price: 250000,
-    stock: 40,
+    stock: 120,
+    status: "Còn hàng",
   },
   {
-    id: 9,
-    name: "Chanh dây",
-    category: "Trái cây nội địa",
-    price: 30000,
+    id: "SP002",
+    name: "Cam Vàng Navel Úc",
+    img: "https://via.placeholder.com/80x80.png?text=Cam+Navel",
+    category: "Họ Cam Quýt",
+    price: 180000,
+    stock: 80,
+    status: "Còn hàng",
+    description:
+      "Cam vàng Navel Úc có vị ngọt đậm, mọng nước, vỏ mỏng và dễ bóc. Thích hợp để ăn tươi hoặc vắt nước.",
+  },
+  {
+    id: "SP003",
+    name: "Dâu Tây Hàn Quốc",
+    img: "https://via.placeholder.com/80x80.png?text=Dâu+Tây",
+    category: "Quả Mọng",
+    price: 450000,
+    stock: 8,
+    status: "Sắp hết hàng",
+    description:
+      "Dâu tây Hàn Quốc quả to, đỏ mọng, hương thơm nồng nàn và vị ngọt thanh. Là một trong những loại dâu tây ngon nhất thế giới.",
+  },
+  {
+    id: "SP004",
+    name: "Nho Xanh không hạt Mỹ",
+    img: "https://via.placeholder.com/80x80.png?text=Nho+Xanh",
+    category: "Quả Mọng",
+    price: 320000,
+    stock: 50,
+    status: "Còn hàng",
+  },
+  {
+    id: "SP005",
+    name: "Xoài Cát Hòa Lộc",
+    img: "https://via.placeholder.com/80x80.png?text=Xoài+Cát",
+    category: "Trái cây nhiệt đới",
+    price: 90000,
+    stock: 0,
+    status: "Hết hàng",
+  },
+  {
+    id: "SP006",
+    name: "Kiwi Vàng New Zealand",
+    img: "https://via.placeholder.com/80x80.png?text=Kiwi",
+    category: "Trái cây nhiệt đới",
+    price: 150000,
+    stock: 75,
+    status: "Còn hàng",
+  },
+  {
+    id: "SP007",
+    name: "Lê Nam Phi",
+    img: "https://via.placeholder.com/80x80.png?text=Lê+Nam+Phi",
+    category: "Táo & Lê",
+    price: 110000,
     stock: 90,
+    status: "Còn hàng",
   },
   {
-    id: 10,
-    name: "Bơ 034",
-    category: "Trái cây nội địa",
-    price: 55000,
-    stock: 110,
+    id: "SP008",
+    name: "Việt Quất Chile",
+    img: "https://via.placeholder.com/80x80.png?text=Việt+Quất",
+    category: "Quả Mọng",
+    price: 380000,
+    stock: 30,
+    status: "Còn hàng",
   },
   {
-    id: 11,
-    name: "Táo Envy Mỹ",
-    category: "Trái cây nhập khẩu",
-    price: 199000,
-    stock: 60,
+    id: "SP009",
+    name: "Bưởi Da Xanh",
+    img: "https://via.placeholder.com/80x80.png?text=Bưởi",
+    category: "Họ Cam Quýt",
+    price: 60000,
+    stock: 4,
+    status: "Sắp hết hàng",
+  },
+  {
+    id: "SP010",
+    name: "Sầu Riêng Ri6",
+    img: "https://via.placeholder.com/80x80.png?text=Sầu+Riêng",
+    category: "Trái cây nhiệt đới",
+    price: 220000,
+    stock: 0,
+    status: "Hết hàng",
+  },
+  {
+    id: "SP011",
+    name: "Cherry Mỹ",
+    img: "https://via.placeholder.com/80x80.png?text=Cherry",
+    category: "Quả Mọng",
+    price: 550000,
+    stock: 45,
+    status: "Còn hàng",
   },
 ];
 
-/**
- * Giả lập hàm tìm kiếm sản phẩm.
- * @param {string} query - Từ khóa tìm kiếm.
- * @returns {Promise<Array>} - Một promise sẽ resolve với mảng các sản phẩm tìm thấy.
- */
+let mockOrders = [
+  {
+    id: "DH746F1",
+    customerName: "Nguyễn Văn An",
+    orderDate: "2023-10-26T10:30:00Z",
+    total: 350000,
+    status: "Hoàn thành",
+    items: [
+      { name: "Táo Envy", quantity: 2 },
+      { name: "Nho Xanh", quantity: 1 },
+    ],
+  },
+  {
+    id: "DH239B3",
+    customerName: "Trần Thị Bích",
+    orderDate: "2023-10-25T14:00:00Z",
+    total: 780000,
+    status: "Đang giao",
+    items: [{ name: "Sầu riêng Ri6", quantity: 3 }],
+  },
+  {
+    id: "DH881C7",
+    customerName: "Lê Hoàng Cường",
+    orderDate: "2023-10-25T09:15:00Z",
+    total: 150000,
+    status: "Chờ xử lý",
+    items: [{ name: "Cam sành", quantity: 5 }],
+  },
+  {
+    id: "DH452A9",
+    customerName: "Phạm Thuỳ Dung",
+    orderDate: "2023-10-24T18:45:00Z",
+    total: 220000,
+    status: "Đã hủy",
+    items: [
+      { name: "Dâu tây", quantity: 1 },
+      { name: "Việt quất", quantity: 1 },
+    ],
+  },
+  {
+    id: "DH673D2",
+    customerName: "Võ Minh Long",
+    orderDate: "2023-10-23T11:00:00Z",
+    total: 95000,
+    status: "Hoàn thành",
+    items: [{ name: "Chuối Laba", quantity: 2 }],
+  },
+  {
+    id: "DH109E5",
+    customerName: "Đặng Thị Mai",
+    orderDate: "2023-10-22T16:20:00Z",
+    total: 560000,
+    status: "Hoàn thành",
+    items: [
+      { name: "Táo Envy", quantity: 4 },
+      { name: "Lê Hàn Quốc", quantity: 2 },
+    ],
+  },
+  {
+    id: "DH110F6",
+    customerName: "Hoàng Văn Giang",
+    orderDate: "2023-10-21T11:30:00Z",
+    total: 120000,
+    status: "Chờ xử lý",
+    items: [{ name: "Xoài Cát Hòa Lộc", quantity: 2 }],
+  },
+  {
+    id: "DH111G7",
+    customerName: "Bùi Thị Hoa",
+    orderDate: "2023-10-20T19:00:00Z",
+    total: 450000,
+    status: "Đang giao",
+    items: [{ name: "Dưa hấu không hạt", quantity: 3 }],
+  },
+];
+
+// Hàm để lấy tất cả đơn hàng
+export const getOrders = () => {
+  // Trả về một bản sao để tránh thay đổi trực tiếp mảng gốc ngoài ý muốn
+  return [...mockOrders];
+};
+
+// Hàm để lấy tất cả sản phẩm
+export const getProducts = () => {
+  // Trả về một bản sao để tránh thay đổi trực tiếp mảng gốc ngoài ý muốn
+  return [...mockProducts];
+};
+
+// Hàm để xóa một đơn hàng
+export const deleteOrderById = (orderId) => {
+  const indexToDelete = mockOrders.findIndex((order) => order.id === orderId);
+  if (indexToDelete > -1) {
+    mockOrders.splice(indexToDelete, 1);
+    return true;
+  }
+  return false;
+};
+
+// Hàm tìm kiếm sản phẩm (đã có trong SearchResults, chuyển vào đây để quản lý tập trung)
 export const searchProducts = (query) => {
-  console.log(`Searching for: "${query}"`);
   return new Promise((resolve) => {
     setTimeout(() => {
       if (!query) {
@@ -94,11 +214,12 @@ export const searchProducts = (query) => {
       }
       const lowercasedQuery = query.toLowerCase();
       const results = mockProducts.filter(
+        // Sử dụng mockProducts từ file riêng
         (product) =>
           product.name.toLowerCase().includes(lowercasedQuery) ||
           product.category.toLowerCase().includes(lowercasedQuery)
       );
       resolve(results);
-    }, 750); // Giả lập độ trễ mạng 750ms
+    }, 500); // Giả lập độ trễ mạng
   });
 };

@@ -16,11 +16,7 @@ import ConfirmationModal from "../Layout/ConfirmationModal";
 
 // --- Dữ liệu giả lập ---
 // Trong ứng dụng thực tế, dữ liệu này sẽ được lấy từ API.
-import { mockProducts } from "../Layout/mockProducts";
-
-// --- Hằng số cho bộ lọc ---
-const categories = ["Tất cả", ...new Set(mockProducts.map((p) => p.category))];
-const statuses = ["Tất cả", ...new Set(mockProducts.map((p) => p.status))];
+import { getProducts } from "../Layout/mockApi";
 
 // Hàm helper để lấy class cho badge trạng thái
 const getStatusBadge = (status) => {
@@ -51,7 +47,19 @@ const itemVariants = {
 
 function ProductList() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState(mockProducts);
+  // Di chuyển việc lấy dữ liệu vào bên trong component
+  const [products, setProducts] = useState(() => getProducts());
+
+  // Khởi tạo bộ lọc dựa trên dữ liệu sản phẩm thực tế
+  const categories = useMemo(
+    () => ["Tất cả", ...new Set(products.map((p) => p.category))],
+    [products]
+  );
+  const statuses = useMemo(
+    () => ["Tất cả", ...new Set(products.map((p) => p.status))],
+    [products]
+  );
+
   const [filters, setFilters] = useState({
     category: "Tất cả",
     status: "Tất cả",

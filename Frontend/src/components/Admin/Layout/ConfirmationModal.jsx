@@ -30,6 +30,7 @@ function ConfirmationModal({
   message,
   confirmText = "Xác nhận",
   cancelText = "Hủy",
+  children,
 }) {
   return (
     <AnimatePresence>
@@ -59,9 +60,12 @@ function ConfirmationModal({
                 {title}
               </h3>
               <div className="mt-2">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {message}
-                </p>
+                {message && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {message}
+                  </p>
+                )}
+                {children}
               </div>
             </div>
             <div className="flex justify-end gap-3 p-4 bg-gray-50 dark:bg-gray-900/50 border-t dark:border-gray-700">

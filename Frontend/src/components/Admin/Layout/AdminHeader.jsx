@@ -31,7 +31,6 @@ const routeTitles = {
   "/admin/dashboard": "Bảng điều khiển",
   "/admin/dashboard/products": "Tất cả trái cây",
   "/admin/dashboard/products/add": "Thêm trái cây",
-  "/admin/dashboard/categories": "Danh mục",
   "/admin/dashboard/orders": "Đơn hàng",
   "/admin/dashboard/customers": "Khách hàng",
   "/admin/dashboard/inventory": "Kho",

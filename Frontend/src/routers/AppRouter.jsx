@@ -19,6 +19,8 @@ import AllNotifications from "../components/Admin/content/AllNotifications.jsx";
 import AdminProfile from "../components/Admin/content/AdminProfile.jsx";
 import AdminSettings from "../components/Admin/content/AdminSettings.jsx";
 import EditProduct from "../components/Admin/content/EditProduct.jsx";
+import Orders from "../components/Admin/content/Orders.jsx";
+import OrderDetail from "../components/Admin/content/OrderDetail.jsx";
 
 export default function AppRouter() {
   return (
@@ -55,6 +57,8 @@ export default function AppRouter() {
             <Route path="profile" element={<AdminProfile />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="products/edit/:productId" element={<EditProduct />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/:orderId" element={<OrderDetail />} />
           </Route>
         </Route>
       </Routes>

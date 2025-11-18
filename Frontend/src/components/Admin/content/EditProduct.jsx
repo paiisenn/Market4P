@@ -16,7 +16,7 @@ import {
 import toast from "react-hot-toast";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { mockProducts } from "../Layout/mockProducts";
+import { mockProducts } from "../Layout/mockApi";
 
 // Giả lập danh sách danh mục, trong thực tế sẽ lấy từ API
 const categories = [
