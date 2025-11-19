@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import {
@@ -224,7 +225,10 @@ function Inventory() {
                   Ngưỡng sắp hết
                 </th>
                 <SortableHeader columnKey="sold" title="Đã bán" />
-                <th scope="col" className="px-6 py-3 text-center">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-center whitespace-nowrap"
+                >
                   Trạng thái
                 </th>
                 <th scope="col" className="px-6 py-3 text-center">
@@ -268,7 +272,7 @@ function Inventory() {
                       {product.lowStockThreshold}
                     </td>
                     <td className="px-6 py-4">{product.sold}</td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
                       <span
                         className={`px-3 py-1 text-xs font-semibold leading-tight rounded-full ${status.badge}`}
                       >
