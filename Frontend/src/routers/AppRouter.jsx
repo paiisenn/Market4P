@@ -21,6 +21,10 @@ import AdminSettings from "../components/Admin/content/AdminSettings.jsx";
 import EditProduct from "../components/Admin/content/EditProduct.jsx";
 import Orders from "../components/Admin/content/Orders.jsx";
 import OrderDetail from "../components/Admin/content/OrderDetail.jsx";
+import Customers from "../components/Admin/content/Customers.jsx";
+import CustomerDetail from "../components/Admin/content/CustomerDetail.jsx";
+import Inventory from "../components/Admin/content/Inventory.jsx";
+import Coupons from "../components/Admin/content/Coupons.jsx";
 
 export default function AppRouter() {
   return (
@@ -59,6 +63,10 @@ export default function AppRouter() {
             <Route path="products/edit/:productId" element={<EditProduct />} />
             <Route path="orders" element={<Orders />} />
             <Route path="orders/:orderId" element={<OrderDetail />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="customers/:customerId" element={<CustomerDetail />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="coupons" element={<Coupons />} />
           </Route>
         </Route>
       </Routes>

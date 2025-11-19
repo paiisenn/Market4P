@@ -67,7 +67,6 @@ function AddProduct() {
     name: "",
     category: "",
     price: "",
-    stock: "",
     description: "",
     status: "Còn hàng", // Thêm trạng thái mặc định
   });
@@ -109,7 +108,6 @@ function AddProduct() {
       !product.name ||
       !product.category ||
       !product.price ||
-      !product.stock ||
       !product.status
     ) {
       toast.error("Vui lòng điền đầy đủ các trường bắt buộc!");
@@ -123,7 +121,11 @@ function AddProduct() {
     // Giả lập quá trình lưu
     const promise = new Promise((resolve) => {
       setTimeout(() => {
-        console.log("Đã lưu sản phẩm:", { ...product, image: imageFile.name });
+        console.log("Đã lưu sản phẩm:", {
+          ...product,
+          stock: 0, // Mặc định tồn kho là 0 khi thêm mới
+          image: imageFile.name,
+        });
         resolve();
       }, 1500);
     });
@@ -243,9 +245,9 @@ function AddProduct() {
 
             <fieldset className="space-y-6">
               <legend className="block text-base font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                Giá & Tồn kho
+                Giá sản phẩm
               </legend>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
                 <div>
                   <label
                     htmlFor="price"
@@ -262,24 +264,6 @@ function AddProduct() {
                     placeholder="Ví dụ: 250000"
                     min="0"
                     icon={<CircleDollarSign size={18} />}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="stock"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-                  >
-                    Số lượng tồn kho
-                  </label>
-                  <FormInput
-                    id="stock"
-                    name="stock"
-                    type="number"
-                    value={product.stock}
-                    onChange={handleInputChange}
-                    placeholder="Ví dụ: 120"
-                    min="0"
-                    icon={<Warehouse size={18} />}
                   />
                 </div>
               </div>

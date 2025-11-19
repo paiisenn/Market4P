@@ -19,6 +19,7 @@ import {
   XCircle,
 } from "lucide-react";
 import ConfirmationModal from "../Layout/ConfirmationModal";
+import { updateProductStock, getProducts } from "../Layout/mockApi";
 
 // --- Dữ liệu giả lập ---
 // Dữ liệu này được đặt tạm thời ở đây. Khi có API, bạn sẽ thay thế bằng logic fetch.
@@ -231,11 +232,58 @@ function OrdersList() {
 
   // Logic thay đổi trạng thái
   const handleStatusChange = (orderId, newStatus, reason = null) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status: newStatus, reason } : order
-      )
+    const orderToUpdate = orders.find((o) => o.id === orderId);
+    if (!orderToUpdate) return;
+
+    // Logic cộng trả lại kho khi hủy đơn hàng
+    // Chỉ cộng trả lại kho nếu đơn hàng đã được duyệt hoặc đang giao trước đó
+    if (
+      newStatus === "Đã hủy" &&
+      (orderToUpdate.status === "Đã duyệt" ||
+        orderToUpdate.status === "Đang giao")
+    ) {
+      const productsInStock = getProducts();
+      orderToUpdate.items.forEach((item) => {
+        const product = productsInStock.find((p) => p.name === item.name);
+        // Cộng trả lại số lượng (quantityChange là số dương)
+        if (product) updateProductStock(product.id, item.quantity);
+      });
+    }
+
+    // Logic trừ kho khi duyệt đơn hàng
+    if (newStatus === "Đã duyệt") {
+      const productsInStock = getProducts();
+      // Kiểm tra xem có đủ hàng không TRƯỚC KHI duyệt
+      for (const item of orderToUpdate.items) {
+        // Cần tìm ID sản phẩm từ tên
+        const product = productsInStock.find((p) => p.name === item.name);
+        if (!product) {
+          toast.error(`Sản phẩm "${item.name}" không tồn tại trong hệ thống!`);
+          return; // Dừng lại nếu sản phẩm không tồn tại
+        }
+        if (product.stock < item.quantity) {
+          toast.error(
+            `Không đủ hàng cho "${item.name}". Tồn kho: ${product.stock}, yêu cầu: ${item.quantity}.`
+          );
+          return; // Dừng lại nếu không đủ hàng
+        }
+      }
+
+      // Nếu đủ hàng, tiến hành trừ kho
+      orderToUpdate.items.forEach((item) => {
+        const product = productsInStock.find((p) => p.name === item.name);
+        if (product) {
+          updateProductStock(product.id, -item.quantity);
+        }
+      });
+    }
+
+    // Cập nhật trạng thái đơn hàng trên UI
+    const updatedOrders = orders.map((order) =>
+      order.id === orderId ? { ...order, status: newStatus, reason } : order
     );
+    setOrders(updatedOrders);
+    toast.success(`Đã cập nhật trạng thái đơn hàng #${orderId}.`);
   };
 
   // Logic sắp xếp

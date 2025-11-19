@@ -48,7 +48,7 @@ function OrderDetail() {
         </p>
         <button
           onClick={() => navigate("/admin/dashboard/orders")}
-          className="mt-6 flex items-center justify-center mx-auto gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600"
+          className="mt-6 flex items-center cursor-pointer transition-colors duration-200 justify-center mx-auto gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600"
         >
           <ArrowLeft size={16} />
           Quay lại danh sách

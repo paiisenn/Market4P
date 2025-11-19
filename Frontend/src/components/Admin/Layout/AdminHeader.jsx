@@ -81,6 +81,8 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
     let currentTitle = "Bảng điều khiển";
     if (location.pathname.startsWith("/admin/dashboard/products/edit/")) {
       currentTitle = "Chỉnh sửa sản phẩm trái cây";
+    } else if (location.pathname.startsWith("/admin/dashboard/customers/")) {
+      currentTitle = "Chi tiết khách hàng";
     } else {
       currentTitle = routeTitles[location.pathname] || "Bảng điều khiển";
     }

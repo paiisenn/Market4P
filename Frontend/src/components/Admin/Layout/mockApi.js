@@ -10,6 +10,8 @@ export const mockProducts = [
     price: 250000,
     stock: 120,
     status: "Còn hàng",
+    lowStockThreshold: 20,
+    sold: 350,
   },
   {
     id: "SP002",
@@ -18,6 +20,8 @@ export const mockProducts = [
     category: "Họ Cam Quýt",
     price: 180000,
     stock: 80,
+    lowStockThreshold: 15,
+    sold: 220,
     status: "Còn hàng",
     description:
       "Cam vàng Navel Úc có vị ngọt đậm, mọng nước, vỏ mỏng và dễ bóc. Thích hợp để ăn tươi hoặc vắt nước.",
@@ -29,6 +33,8 @@ export const mockProducts = [
     category: "Quả Mọng",
     price: 450000,
     stock: 8,
+    lowStockThreshold: 10,
+    sold: 95,
     status: "Sắp hết hàng",
     description:
       "Dâu tây Hàn Quốc quả to, đỏ mọng, hương thơm nồng nàn và vị ngọt thanh. Là một trong những loại dâu tây ngon nhất thế giới.",
@@ -40,6 +46,8 @@ export const mockProducts = [
     category: "Quả Mọng",
     price: 320000,
     stock: 50,
+    lowStockThreshold: 25,
+    sold: 180,
     status: "Còn hàng",
   },
   {
@@ -49,6 +57,8 @@ export const mockProducts = [
     category: "Trái cây nhiệt đới",
     price: 90000,
     stock: 0,
+    lowStockThreshold: 10,
+    sold: 300,
     status: "Hết hàng",
   },
   {
@@ -58,6 +68,8 @@ export const mockProducts = [
     category: "Trái cây nhiệt đới",
     price: 150000,
     stock: 75,
+    lowStockThreshold: 20,
+    sold: 150,
     status: "Còn hàng",
   },
   {
@@ -67,6 +79,8 @@ export const mockProducts = [
     category: "Táo & Lê",
     price: 110000,
     stock: 90,
+    lowStockThreshold: 15,
+    sold: 110,
     status: "Còn hàng",
   },
   {
@@ -76,6 +90,8 @@ export const mockProducts = [
     category: "Quả Mọng",
     price: 380000,
     stock: 30,
+    lowStockThreshold: 20,
+    sold: 80,
     status: "Còn hàng",
   },
   {
@@ -85,6 +101,8 @@ export const mockProducts = [
     category: "Họ Cam Quýt",
     price: 60000,
     stock: 4,
+    lowStockThreshold: 5,
+    sold: 450,
     status: "Sắp hết hàng",
   },
   {
@@ -94,6 +112,8 @@ export const mockProducts = [
     category: "Trái cây nhiệt đới",
     price: 220000,
     stock: 0,
+    lowStockThreshold: 10,
+    sold: 120,
     status: "Hết hàng",
   },
   {
@@ -103,6 +123,8 @@ export const mockProducts = [
     category: "Quả Mọng",
     price: 550000,
     stock: 45,
+    lowStockThreshold: 15,
+    sold: 60,
     status: "Còn hàng",
   },
 ];
@@ -222,4 +244,39 @@ export const searchProducts = (query) => {
       resolve(results);
     }, 500); // Giả lập độ trễ mạng
   });
+};
+
+// Hàm cập nhật tồn kho sản phẩm
+export const updateProductStock = (productId, quantityChange) => {
+  const productIndex = mockProducts.findIndex((p) => p.id === productId);
+  if (productIndex > -1) {
+    const product = mockProducts[productIndex];
+    const newStock = product.stock + quantityChange; // quantityChange sẽ là số âm khi trừ kho
+
+    if (newStock < 0) {
+      // Không cho phép tồn kho âm
+      console.error(
+        `Không đủ hàng cho sản phẩm ${productId}. Tồn kho: ${
+          product.stock
+        }, Yêu cầu trừ: ${-quantityChange}`
+      );
+      return { success: false, product };
+    }
+
+    product.stock = newStock;
+
+    // Nếu là trừ kho (bán hàng), tăng số lượng đã bán
+    if (quantityChange < 0) {
+      product.sold += -quantityChange;
+    }
+
+    // Tự động cập nhật trạng thái dựa trên tồn kho mới
+    if (product.stock === 0) {
+      product.status = "Hết hàng";
+    } else if (product.stock <= product.lowStockThreshold) {
+      product.status = "Sắp hết hàng";
+    }
+    return { success: true, product };
+  }
+  return { success: false, product: null };
 };

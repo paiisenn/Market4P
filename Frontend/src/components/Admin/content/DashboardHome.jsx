@@ -21,6 +21,7 @@ import {
   FaShoppingCart,
   FaDollarSign,
 } from "react-icons/fa";
+import { initialOrders, getStatusIcon } from "./Orders"; // Import dữ liệu đơn hàng chung và icon
 
 // Đăng ký các thành phần cần thiết cho Chart.js
 ChartJS.register(
@@ -167,24 +168,21 @@ const chartOptions = {
 };
 
 // 4. Dữ liệu đơn hàng gần đây
-const recentOrders = [
-  {
-    id: "DH001",
-    user: "Nguyễn Văn A",
-    total: "1,200,000đ",
-    status: "Hoàn thành",
-  },
-  { id: "DH002", user: "Trần Thị B", total: "550,000đ", status: "Đang xử lý" },
-  { id: "DH003", user: "Lê Văn C", total: "3,400,000đ", status: "Hoàn thành" },
-  { id: "DH004", user: "Phạm Thị D", total: "250,000đ", status: "Đã hủy" },
-];
+// Lấy 4 đơn hàng gần nhất từ dữ liệu chung
+const recentOrders = [...initialOrders]
+  .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
+  .slice(0, 4);
 
 // Hàm helper để lấy class cho badge trạng thái
 const getStatusBadge = (status) => {
   switch (status) {
     case "Hoàn thành":
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-    case "Đang xử lý":
+    case "Đã duyệt":
+      return "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300";
+    case "Đang giao":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+    case "Chờ xử lý":
       return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
     case "Đã hủy":
       return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
@@ -322,14 +320,17 @@ function DashboardHome() {
                   <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {order.id}
                   </td>
-                  <td className="px-6 py-4">{order.user}</td>
-                  <td className="px-6 py-4">{order.total}</td>
+                  <td className="px-6 py-4">{order.customerName}</td>
+                  <td className="px-6 py-4">
+                    {order.total.toLocaleString("vi-VN")}đ
+                  </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
+                      className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
                         order.status
                       )}`}
                     >
+                      {getStatusIcon(order.status)}
                       {order.status}
                     </span>
                   </td>
