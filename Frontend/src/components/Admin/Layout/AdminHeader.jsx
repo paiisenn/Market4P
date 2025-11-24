@@ -4,8 +4,6 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
-  Sun,
-  Moon,
   Bell,
   User,
   Settings,
@@ -22,7 +20,6 @@ import toast from "react-hot-toast";
 import { fetchNotifications, markNotificationAsRead } from "./notificationApi";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useTheme } from "../Layout/ThemeContext";
 import adminAvatar from "../../../assets/images/admin-avatar.jpg";
 import ConfirmationModal from "./ConfirmationModal";
 
@@ -62,7 +59,6 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [title, setTitle] = useState("Bảng điều khiển");
-  const { theme, toggleTheme } = useTheme();
   const [isNotificationOpen, setNotificationOpen] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -153,7 +149,7 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
     // Đóng modal
     setLogoutModalOpen(false);
     // Thực hiện đăng xuất
-    localStorage.removeItem("isAdminAuthenticated");
+    localStorage.removeItem("user");
     toast.success("Đăng xuất thành công!");
     // Chuyển hướng về trang đăng nhập với thông báo
     navigate("/login", { state: { message: "Bạn đã đăng xuất." } });
@@ -194,14 +190,14 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
         message="Bạn có chắc chắn muốn kết thúc phiên làm việc này không?"
         confirmText="Đăng xuất"
       />
-      <header className="bg-white dark:bg-gray-800 shadow-md p-4 z-10 transition-colors duration-300">
+      <header className="bg-white shadow-sm p-4 z-10">
         <div className="flex justify-between items-center w-full">
           {/* Left Side */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* Hamburger Menu */}
             <button
               onClick={() => setSidebarOpen((prev) => !prev)}
-              className="text-gray-600 dark:text-gray-300 cursor-pointer hover:text-amber-600 transition-colors duration-300 dark:hover:text-white focus:outline-none relative w-6 h-6"
+              className="text-gray-600 cursor-pointer hover:text-amber-600 transition-colors duration-300 focus:outline-none relative w-6 h-6"
             >
               <AnimatePresence initial={false}>
                 <motion.div
@@ -221,7 +217,7 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
               </AnimatePresence>
             </button>
             {/* Page Title */}
-            <h2 className="hidden md:block text-xl font-semibold text-gray-700 dark:text-gray-200">
+            <h2 className="hidden md:block text-xl font-semibold text-gray-800">
               {title}
             </h2>
           </div>
@@ -231,39 +227,28 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
             {/* Search Bar */}
             <div className="relative hidden sm:block">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <Search
-                  className="text-gray-400 dark:text-gray-500"
-                  size={20}
-                />
+                <Search className="text-gray-400" size={20} />
               </span>
               <input
                 type="text"
                 placeholder="Tìm kiếm..."
-                className="w-full max-w-xs py-2 pl-10 pr-4 text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-200 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-300"
+                className="w-full max-w-xs py-2 pl-10 pr-4 text-gray-700 bg-gray-100 border border-transparent rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearch}
               />
             </div>
 
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-600 cursor-pointer dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
-            >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-
             {/* Notification Menu */}
             <div className="relative" ref={notificationRef}>
               <button
                 onClick={() => setNotificationOpen(!isNotificationOpen)}
-                className="relative p-2 cursor-pointer rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+                className="relative p-2 cursor-pointer rounded-full text-gray-600 hover:bg-gray-100 transition-colors duration-300"
               >
                 <Bell size={20} />
                 {/* Số lượng thông báo chưa đọc */}
                 {notifications.filter((n) => !n.read).length > 0 && (
-                  <span className="absolute top-1 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-gray-800"></span>
+                  <span className="absolute top-1 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white"></span>
                 )}
               </button>
 
@@ -274,10 +259,10 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border dark:border-gray-700 flex flex-col"
+                    className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col"
                   >
-                    <div className="p-3 font-semibold bg-amber-200 rounded-t-lg text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
-                      Thông báo
+                    <div className="p-3 font-semibold text-gray-800 border-b border-gray-200">
+                      Thông báo ({notifications.filter((n) => !n.read).length})
                     </div>
                     <div className="flex-1 max-h-80 overflow-y-auto custom-scrollbar">
                       {loadingNotifications ? (
@@ -293,30 +278,30 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
                             }}
                             key={notif.id}
                             href="#"
-                            className="flex items-center gap-4 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                            className="flex items-center gap-4 px-4 py-3 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer"
                           >
                             <div className="relative shrink-0">
                               <div
                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
-                                  notif.type === "order"
-                                    ? "bg-blue-300 dark:bg-blue-900/50 text-blue-500"
-                                    : notif.type === "customer"
-                                    ? "bg-green-300 dark:bg-green-900/50 text-green-500"
-                                    : notif.type === "inventory"
-                                    ? "bg-yellow-300 dark:bg-yellow-900/50 text-yellow-500"
-                                    : "bg-purple-300 dark:bg-purple-900/50 text-purple-500"
+                                  !notif.read ? "bg-amber-500" : "bg-gray-300"
                                 }`}
                               >
-                                {getNotificationIcon(notif.type)}
+                                <div
+                                  className={
+                                    !notif.read ? "text-white" : "text-gray-600"
+                                  }
+                                >
+                                  {getNotificationIcon(notif.type)}
+                                </div>
                               </div>
                               {!notif.read && (
-                                <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
+                                <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-blue-500 border-2 border-white"></span>
                               )}
                             </div>
                             <div className="flex-1">
                               <p
-                                className={`text-gray-800 dark:text-gray-100 ${
-                                  !notif.read ? "font-bold" : "font-normal"
+                                className={`text-gray-800 ${
+                                  !notif.read ? "font-semibold" : "font-normal"
                                 }`}
                               >
                                 {notif.message}
@@ -339,12 +324,12 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
                         </p>
                       )}
                     </div>
-                    <div className="border-t dark:border-gray-700">
+                    <div className="border-t border-gray-200">
                       <button
                         onClick={() =>
                           navigate("/admin/dashboard/notifications")
                         }
-                        className="w-full text-center py-2.5 text-sm cursor-pointer rounded-b-lg font-medium text-amber-600 dark:text-amber-500 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                        className="w-full text-center py-2.5 text-sm cursor-pointer rounded-b-lg font-medium text-amber-600 hover:bg-gray-100 transition-colors duration-200"
                       >
                         Xem tất cả thông báo
                       </button>
@@ -363,9 +348,9 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
                 <img
                   src={adminAvatar}
                   alt="Admin Avatar"
-                  className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-gray-200"
                 />
-                <div className="hidden lg:flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-300">
+                <div className="hidden lg:flex items-center text-sm font-medium text-gray-600 transition-colors duration-300">
                   <span>Admin</span>
                   <ChevronDown
                     size={16}
@@ -383,23 +368,23 @@ function AdminHeader({ isSidebarOpen, setSidebarOpen }) {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden border dark:border-gray-700 transition-colors duration-300"
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden border border-gray-200"
                   >
                     <NavLink
                       to="/admin/dashboard/profile"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-300"
                     >
                       <User size={16} /> Hồ sơ
                     </NavLink>
                     <NavLink
                       to="/admin/dashboard/settings"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-300"
                     >
                       <Settings size={16} /> Cài đặt
                     </NavLink>
-                    <button
+                    <button // Thêm border-t để phân tách
                       onClick={handleLogout}
-                      className="w-full flex items-center cursor-pointer gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors duration-300"
+                      className="w-full flex items-center cursor-pointer gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors duration-300"
                     >
                       <LogOut size={16} /> Đăng xuất
                     </button>

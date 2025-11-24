@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Admin/Layout/AdminSidebar";
 import Header from "../../components/Admin/Layout/AdminHeader";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
+const IDLE_TIMEOUT = 15 * 60 * 1000; // 30 phút
 function Dashboard() {
   // Đọc trạng thái từ localStorage, mặc định là true nếu không có
   const [isSidebarOpen, setSidebarOpen] = useState(() => {
@@ -10,13 +12,51 @@ function Dashboard() {
     return saved !== null ? JSON.parse(saved) : true;
   });
 
+  const navigate = useNavigate();
+
   // Lưu trạng thái vào localStorage mỗi khi nó thay đổi
   useEffect(() => {
     localStorage.setItem("sidebarOpen", JSON.stringify(isSidebarOpen));
   }, [isSidebarOpen]);
 
+  // Logic xử lý hết hạn phiên làm việc
+  useEffect(() => {
+    let lastActivity = Date.now();
+
+    const handleLogout = () => {
+      // Xóa thông tin đăng nhập
+      localStorage.removeItem("user");
+      toast.error("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!");
+      navigate("/login", { replace: true });
+    };
+
+    const resetTimer = () => {
+      lastActivity = Date.now();
+    };
+
+    const checkIdleTime = () => {
+      if (Date.now() - lastActivity > IDLE_TIMEOUT) {
+        handleLogout();
+      }
+    };
+
+    const activityEvents = ["mousemove", "keydown", "click", "scroll"];
+    activityEvents.forEach((event) =>
+      window.addEventListener(event, resetTimer)
+    );
+
+    const intervalId = setInterval(checkIdleTime, 60000); // Kiểm tra mỗi phút
+
+    return () => {
+      clearInterval(intervalId);
+      activityEvents.forEach((event) =>
+        window.removeEventListener(event, resetTimer)
+      );
+    };
+  }, [navigate]);
+
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <Sidebar isSidebarOpen={isSidebarOpen} />
 
@@ -26,7 +66,7 @@ function Dashboard() {
         <Header isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 dark:bg-gray-900 transition-colors duration-300">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
           <div className="container mx-auto px-6 py-8">
             <Outlet />
           </div>

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ThemeProvider } from "../components/Admin/Layout/ThemeContext";
 import CustomToaster from "./Toaster";
 
 const RootLayout = () => {
@@ -19,14 +18,12 @@ const RootLayout = () => {
   }, [location]);
 
   return (
-    <ThemeProvider>
-      <>
-        {/* Sử dụng CustomToaster để có style nhất quán trên toàn ứng dụng */}
-        <CustomToaster />
-        {/* Outlet sẽ render các component con tương ứng với route */}
-        <Outlet />
-      </>
-    </ThemeProvider>
+    <>
+      {/* Sử dụng CustomToaster để có style nhất quán trên toàn ứng dụng */}
+      <CustomToaster />
+      {/* Outlet sẽ render các component con tương ứng với route */}
+      <Outlet />
+    </>
   );
 };
 

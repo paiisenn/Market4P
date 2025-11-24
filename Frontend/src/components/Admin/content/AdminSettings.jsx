@@ -1,25 +1,14 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import ChangePasswordModal from "./ChangePasswordModal";
-import { useTheme } from "../Layout/ThemeContext";
-import {
-  Bell,
-  Shield,
-  Palette,
-  Save,
-  KeyRound,
-  Store,
-  ServerCog,
-} from "lucide-react";
+import { Bell, Shield, Save, KeyRound, Store, ServerCog } from "lucide-react";
 
 // Component phụ cho từng khu vực cài đặt
 const SettingsSection = ({ title, icon, children }) => (
-  <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
-    <div className="p-4 border-b dark:border-gray-700 flex items-center gap-3">
+  <div className="bg-white shadow-md rounded-lg">
+    <div className="p-4 border-b border-gray-200 flex items-center gap-3">
       {icon}
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-        {title}
-      </h3>
+      <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
     </div>
     <div className="p-6 space-y-6">{children}</div>
   </div>
@@ -29,13 +18,13 @@ const SettingsSection = ({ title, icon, children }) => (
 const ToggleSwitch = ({ label, description, enabled, setEnabled }) => (
   <div className="flex items-center justify-between">
     <div>
-      <p className="font-medium text-gray-700 dark:text-gray-200">{label}</p>
-      <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>
+      <p className="font-medium text-gray-700">{label}</p>
+      <p className="text-sm text-gray-500">{description}</p>
     </div>
     <button
       onClick={() => setEnabled(!enabled)}
-      className={`relative inline-flex items-center cursor-pointer h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 dark:focus:ring-offset-gray-900 ${
-        enabled ? "bg-amber-500" : "bg-gray-300 dark:bg-gray-600"
+      className={`relative inline-flex items-center cursor-pointer h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 ${
+        enabled ? "bg-amber-500" : "bg-gray-300"
       }`}
     >
       <span
@@ -57,10 +46,7 @@ const SettingInput = ({
   description,
 }) => (
   <div>
-    <label
-      htmlFor={name}
-      className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-    >
+    <label htmlFor={name} className="block text-sm font-medium text-gray-700">
       {label}
     </label>
     <input
@@ -70,13 +56,9 @@ const SettingInput = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="mt-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-amber-500"
+      className="mt-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
     />
-    {description && (
-      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-        {description}
-      </p>
-    )}
+    {description && <p className="mt-1 text-xs text-gray-500">{description}</p>}
   </div>
 );
 
@@ -85,7 +67,6 @@ function AdminSettings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
 
-  const { theme, setTheme } = useTheme();
   // State cho modal đổi mật khẩu
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
@@ -104,7 +85,6 @@ function AdminSettings() {
         console.log("Đã lưu cài đặt:", {
           emailNotifications,
           pushNotifications,
-          theme,
           maintenanceMode,
           storeInfo,
         });
@@ -127,9 +107,7 @@ function AdminSettings() {
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
-          Cài đặt
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-800">Cài đặt</h2>
         <button
           onClick={handleSave}
           className="flex items-center cursor-pointer gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
@@ -166,16 +144,14 @@ function AdminSettings() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-700 dark:text-gray-200">
-                Đổi mật khẩu
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="font-medium text-gray-700">Đổi mật khẩu</p>
+              <p className="text-sm text-gray-500">
                 Nên thay đổi mật khẩu định kỳ để tăng cường bảo mật.
               </p>
             </div>
             <button
               onClick={() => setPasswordModalOpen(true)}
-              className="flex items-center cursor-pointer gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 transition-colors"
+              className="flex items-center cursor-pointer gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
             >
               <KeyRound size={16} />
               Thay đổi
@@ -222,33 +198,6 @@ function AdminSettings() {
             enabled={maintenanceMode}
             setEnabled={setMaintenanceMode}
           />
-        </SettingsSection>
-
-        {/* Cài đặt giao diện */}
-        <SettingsSection
-          title="Giao diện"
-          icon={<Palette className="text-amber-500" />}
-        >
-          <div>
-            <p className="font-medium text-gray-700 dark:text-gray-200 mb-2">
-              Chủ đề
-            </p>
-            <div className="flex gap-4">
-              {["light", "dark"].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTheme(t)}
-                  className={`px-4 py-2 rounded-lg cursor-pointer text-sm capitalize border-2 ${
-                    theme === t
-                      ? "border-amber-500 bg-amber-50 dark:bg-amber-900/30"
-                      : "border-gray-300 dark:border-gray-600"
-                  }`}
-                >
-                  {t === "light" ? "Sáng" : "Tối"}
-                </button>
-              ))}
-            </div>
-          </div>
         </SettingsSection>
       </div>
       <ChangePasswordModal
