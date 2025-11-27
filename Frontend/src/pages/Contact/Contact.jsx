@@ -1,23 +1,15 @@
-<<<<<<< HEAD
 import Navbar from "../../components/navbar"
 
-function Contact() {
-        return (
-=======
-import Navbar from "../../components/Navbar"
-import Footer from "../../components/Footer"
 import { Clock, Map, MapPin, ReceiptText } from "lucide-react"
+import Footer from "../../components/Footer"
+
 
 function Contact() {
     return (
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
         <main>
             <header>
                 <Navbar></Navbar>
             </header>
-<<<<<<< HEAD
-=======
-
 
             <div className="pt-19">
                 {/* Question */}
@@ -122,8 +114,7 @@ function Contact() {
             </div>
 
             <Footer></Footer>
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
-        </main>
+        </main >
     )
 }
 
