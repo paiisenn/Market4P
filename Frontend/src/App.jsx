@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-import { Outlet } from "react-router-dom";
-
-function App() {
-  return (
-    <>
-      {/* Outlet sẽ là nơi render các component tương ứng với route */}
-      <Outlet />
-    </>
-=======
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
@@ -27,7 +16,6 @@ function App() {
       <Route path="/shop" element={<Shop />} />
       <Route path="/login" element={<Login />} />
     </Routes>
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
   );
 }
 

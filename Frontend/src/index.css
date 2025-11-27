@@ -2,7 +2,6 @@
 
 * {
     font-family: 'Open Sans', sans-serif;
-<<<<<<< HEAD
 }
 
 /* Tùy chỉnh thanh cuộn cho các trình duyệt WebKit (Chrome, Safari, Edge) */
@@ -34,6 +33,4 @@
     /* "auto" hoặc "thin" */
     scrollbar-color: #4a5568 transparent;
     /* Màu con trượt và màu track */
-=======
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
 }

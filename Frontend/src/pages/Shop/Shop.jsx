@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import Navbar from "../../components/navbar"
-
-=======
-import Navbar from "../../components/Navbar"
 import Footer from "../../components/Footer"
 import Button from "../../components/Button/Button"
 import Cate_Fruits from "../../assets/images/cate_fruits.avif"
@@ -16,7 +12,6 @@ import BanhMiLuaMach from "../../assets/images/banhmiluamach.avif"
 import SuonCotLet from "../../assets/images/suoncotlet.avif"
 import BoWagyu from "../../assets/images/bowagyu.avif"
 import BanhMiSandwich from "../../assets/images/banhmisandwich.png"
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
 
 function Shop() {
     return (
@@ -24,8 +19,6 @@ function Shop() {
             <header>
                 <Navbar></Navbar>
             </header>
-<<<<<<< HEAD
-=======
 
             <div className="pt-19">
                 {/* Category */}
@@ -372,7 +365,6 @@ function Shop() {
             </div>
 
             <Footer></Footer>
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
         </main>
     )
 }
