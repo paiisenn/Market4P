@@ -2,7 +2,10 @@ import Navbar from "../../components/Navbar"
 import Footer from "../../components/Footer"
 import { Banknote, BriefcaseBusiness, RefreshCw, Truck } from "lucide-react"
 import featureBg from "../../assets/images/feature-bg.jpg"
+<<<<<<< HEAD
+=======
 import VanTai from "../../assets/images/VanTai.png"
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
 
 function About() {
     return (
@@ -11,7 +14,10 @@ function About() {
                 <Navbar></Navbar>
             </header>
             <div className="pt-19 ">
+<<<<<<< HEAD
+=======
                 {/* why */}
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
                 <div className="flex items-center p-20 pl-40">
                     {/* --- Text Section --- */}
                     <div className="flex flex-col gap-10 w-1/2">
@@ -89,6 +95,10 @@ function About() {
                     </div>
                 </div>
 
+<<<<<<< HEAD
+            </div>
+            {/* <Footer></Footer> */}
+=======
                 {/* team */}
                 <div className="p-20 bg-gray-100">
                     <div className="text-center w-210 mx-auto">
@@ -126,6 +136,7 @@ function About() {
                 </div>
             </div>
             <Footer></Footer>
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
         </div>
     )
 }

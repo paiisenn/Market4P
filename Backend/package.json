@@ -2,17 +2,26 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
+<<<<<<< HEAD
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+=======
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/server.js"
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+<<<<<<< HEAD
+=======
     "cookie-parser": "^1.4.7",
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
@@ -21,4 +30,8 @@
     "nodemon": "^3.1.10",
     "socket.io": "^4.8.1"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc

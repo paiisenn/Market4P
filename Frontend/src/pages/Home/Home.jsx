@@ -1,5 +1,9 @@
 import PromoCountdown from '../../components/PromoCountdown/PromoCountdown'
+<<<<<<< HEAD
+import Navbar from "../../components/navbar"
+=======
 import Navbar from "../../components/Navbar"
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
 import Button from '../../components/Button/Button'
 import trangchu from "../../assets/images/trangchu.jpg"
 import { Truck, PhoneCall, RefreshCcw, ShoppingCart } from "lucide-react"
@@ -19,6 +23,19 @@ function Home() {
                     <div className="absolute inset-0 bg-black/40"></div>
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center font-bold">
                         <p className="text-amber-600 text-xl">
+<<<<<<< HEAD
+                            Fresh & Organic
+                        </p>
+                        <p className="text-5xl text-white my-2">
+                            Delicous Seasonal Fruits
+                        </p>
+                        <div className="flex items-center justify-center font-semibold gap-x-3 text-white mt-4">
+                            <div className="bg-amber-600 py-3 p-5 rounded-full hover:cursor-pointer hover:brightness-90">
+                                <a href="">Fruits Collection</a>
+                            </div>
+                            <div className="bg-amber-600 py-3 p-5 rounded-full hover:cursor-pointer hover:brightness-90">
+                                <a href="">Contact Us</a>
+=======
                             Tươi & Sạch
                         </p>
                         <p className="text-5xl text-white my-1">
@@ -30,6 +47,7 @@ function Home() {
                             </div>
                             <div className="bg-amber-600 py-3 p-5 rounded-full hover:cursor-pointer hover:brightness-90">
                                 <a href="">Liên hệ với chúng tôi</a>
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
                             </div>
                         </div>
                     </div>
@@ -90,7 +108,11 @@ function Home() {
                             Chúng tôi cam kết mang đến cho bạn nguồn trái cây sạch, ngon và giàu dinh dưỡng nhất.</p>
                     </div>
                     <div className="flex items-center justify-evenly">
+<<<<<<< HEAD
+                        <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
+=======
                         <div className="shadow-lg p-10">
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
                             <img src={strawberry} alt="" className="object-cover w-70" />
                             <div className="text-center">
                                 <p className="text-xl font-bold">Dâu tây</p>
@@ -99,7 +121,11 @@ function Home() {
                             </div>
                             <Button></Button>
                         </div>
+<<<<<<< HEAD
+                        <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
+=======
                         <div className="shadow-lg p-10">
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
                             <img src={berry} alt="" className="object-cover w-70" />
                             <div className="text-center">
                                 <p className="text-xl font-bold">Nho</p>
@@ -108,7 +134,11 @@ function Home() {
                             </div>
                             <Button></Button>
                         </div>
+<<<<<<< HEAD
+                        <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
+=======
                         <div className="shadow-lg p-10">
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
                             <img src={lemon} alt="" className="object-cover w-70" />
                             <div className="text-center">
                                 <p className="text-xl font-bold">Chanh</p>
@@ -148,9 +178,15 @@ function Home() {
                             </p>
                         </div>
                         <PromoCountdown></PromoCountdown>
+<<<<<<< HEAD
+                        <button className=" mt-5 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full">
+                            <ShoppingCart></ShoppingCart>
+                            Add to card
+=======
                         <button className=" mt-5 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full hover:cursor-pointer hover:opacity-90">
                             <ShoppingCart></ShoppingCart>
                             Thêm vào giỏ hàng
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
                         </button>
                     </div>
                 </div>
