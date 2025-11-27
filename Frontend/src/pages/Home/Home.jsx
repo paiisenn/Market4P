@@ -1,5 +1,5 @@
 import PromoCountdown from '../../components/PromoCountdown/PromoCountdown'
-import Navbar from "../../components/navbar"
+import Navbar from "../../components/Navbar"
 import Button from '../../components/Button/Button'
 import trangchu from "../../assets/images/trangchu.jpg"
 import { Truck, PhoneCall, RefreshCcw, ShoppingCart } from "lucide-react"
@@ -19,17 +19,17 @@ function Home() {
                     <div className="absolute inset-0 bg-black/40"></div>
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center font-bold">
                         <p className="text-amber-600 text-xl">
-                            Fresh & Organic
+                            Tươi & Sạch
                         </p>
-                        <p className="text-5xl text-white my-2">
-                            Delicous Seasonal Fruits
+                        <p className="text-5xl text-white my-1">
+                            Trái cây ngon theo mùa
                         </p>
-                        <div className="flex items-center justify-center font-semibold gap-x-3 text-white mt-4">
+                        <div className="flex items-center justify-center font-semibold gap-x-3 text-white mt-6">
                             <div className="bg-amber-600 py-3 p-5 rounded-full hover:cursor-pointer hover:brightness-90">
-                                <a href="">Fruits Collection</a>
+                                <a href="">Đi đến cửa hàng</a>
                             </div>
                             <div className="bg-amber-600 py-3 p-5 rounded-full hover:cursor-pointer hover:brightness-90">
-                                <a href="">Contact Us</a>
+                                <a href="">Liên hệ với chúng tôi</a>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ function Home() {
                             Chúng tôi cam kết mang đến cho bạn nguồn trái cây sạch, ngon và giàu dinh dưỡng nhất.</p>
                     </div>
                     <div className="flex items-center justify-evenly">
-                        <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
+                        <div className="shadow-lg p-10">
                             <img src={strawberry} alt="" className="object-cover w-70" />
                             <div className="text-center">
                                 <p className="text-xl font-bold">Dâu tây</p>
@@ -99,7 +99,7 @@ function Home() {
                             </div>
                             <Button></Button>
                         </div>
-                        <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
+                        <div className="shadow-lg p-10">
                             <img src={berry} alt="" className="object-cover w-70" />
                             <div className="text-center">
                                 <p className="text-xl font-bold">Nho</p>
@@ -108,7 +108,7 @@ function Home() {
                             </div>
                             <Button></Button>
                         </div>
-                        <div className="shadow-lg p-10 hover:cursor-pointer hover:opacity-90">
+                        <div className="shadow-lg p-10">
                             <img src={lemon} alt="" className="object-cover w-70" />
                             <div className="text-center">
                                 <p className="text-xl font-bold">Chanh</p>
@@ -148,9 +148,9 @@ function Home() {
                             </p>
                         </div>
                         <PromoCountdown></PromoCountdown>
-                        <button className=" mt-5 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full">
+                        <button className=" mt-5 flex items-center gap-x-2 bg-amber-600 text-white py-2 px-4 rounded-full hover:cursor-pointer hover:opacity-90">
                             <ShoppingCart></ShoppingCart>
-                            Add to card
+                            Thêm vào giỏ hàng
                         </button>
                     </div>
                 </div>

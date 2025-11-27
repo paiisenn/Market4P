@@ -92,9 +92,8 @@ const PasswordStrengthMeter = ({ password = "" }) => {
         {requirements.map((req, index) => (
           <div
             key={index}
-            className={`flex items-center transition-colors duration-300 ${
-              req.satisfied ? "text-green-600" : "text-gray-500"
-            }`}
+            className={`flex items-center transition-colors duration-300 ${req.satisfied ? "text-green-600" : "text-gray-500"
+              }`}
           >
             {req.satisfied ? (
               <Check className="w-3.5 h-3.5 mr-1.5 shrink-0" />
@@ -247,16 +246,12 @@ function LoginCard() {
         style={{ height: containerHeight }}
       >
         <div
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
-            formState === "login"
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "login" || isLogin
               ? "opacity-100 translate-x-0"
               : "opacity-0 -translate-x-full pointer-events-none invisible"
-          }`}
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${isLogin
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 -translate-x-full pointer-events-none"
-            }`} // Gán ref cho div chứa form Login
+            }`}
         >
+
           {/* Login Form */}
           <form
             ref={loginFormRef}
@@ -357,11 +352,10 @@ function LoginCard() {
           </form>
         </div>
         <div
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
-            formState === "register"
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "register"
               ? "opacity-100 translate-x-0"
               : "opacity-0 translate-x-full pointer-events-none invisible"
-          }`}
+            }`}
         >
           {/* Gán ref cho div chứa form Register */}
           {/* Register Form */}
@@ -480,11 +474,10 @@ function LoginCard() {
         </div>
         {/* Forgot Password Form */}
         <div
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
-            formState === "forgotPassword"
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "forgotPassword"
               ? "opacity-100 translate-x-0"
               : "opacity-0 translate-x-full pointer-events-none invisible"
-          }`}
+            }`}
         >
           <form
             ref={forgotFormRef}
