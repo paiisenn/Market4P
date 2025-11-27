@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+<<<<<<< HEAD
 import RootLayout from "../components/RootLayout";
 import App from "../App.jsx";
 import Login from "../pages/Login/Login";
@@ -25,11 +26,19 @@ import Customers from "../components/Admin/content/Customers.jsx";
 import CustomerDetail from "../components/Admin/content/CustomerDetail.jsx";
 import Inventory from "../components/Admin/content/Inventory.jsx";
 import Coupons from "../components/Admin/content/Coupons.jsx";
+=======
+import App from "../App";
+import Login from "../pages/Login/Login";
+import Register from "../pages/Login/Register";
+import ForgotPassword from "../pages/Login/ForgotPassword";
+import Home from "../pages/Home/Home";
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+<<<<<<< HEAD
         {/* RootLayout sẽ bao bọc toàn bộ ứng dụng để quản lý Toaster */}
         <Route element={<RootLayout />}>
           {/* Trang Login nằm ngoài layout chính (không có Navbar, Footer) */}
@@ -68,6 +77,13 @@ export default function AppRouter() {
             <Route path="inventory" element={<Inventory />} />
             <Route path="coupons" element={<Coupons />} />
           </Route>
+=======
+        <Route path="/" element={<App />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgot" element={<ForgotPassword />} />
+          <Route path="home" element={<Home />} />
+>>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
         </Route>
       </Routes>
     </BrowserRouter>
