@@ -398,10 +398,6 @@ function LoginCard() {
             ? "opacity-100 translate-x-0"
             : "opacity-0 translate-x-full pointer-events-none invisible"
             }`}
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "register"
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 translate-x-full pointer-events-none invisible"
-            }`}
         >
           {/* Gán ref cho div chứa form Register */}
           {/* Register Form */}
