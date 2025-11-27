@@ -41,6 +41,7 @@ export const signUp = async (req, res) => {
       hashedPassword,
       email,
       displayName: `${firstName} ${lastName}`,
+      role: "user",
     });
 
     return res.sendStatus(204);
@@ -80,7 +81,7 @@ export const signIn = async (req, res) => {
 
     // Tạo access token và refresh token như trước
     const accessToken = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: ACCESS_TOKEN_TTL }
     );
@@ -102,7 +103,7 @@ export const signIn = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: `User ${user.displayName} đã logged in!`, accessToken });
+      .json({ message: `User ${user.displayName} đã logged in!`, accessToken, role: user.role });
   } catch (error) {
     console.error("Lỗi khi gọi signIn", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });

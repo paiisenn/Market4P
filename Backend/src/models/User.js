@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // cho phép null, nhưng không được trùng
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user", // mặc định là user
+    },
   },
   {
     timestamps: true,
