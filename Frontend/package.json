@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.16",
+<<<<<<< HEAD
     "chart.js": "^4.5.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
@@ -18,6 +19,10 @@
     "react-chartjs-2": "^5.3.1",
     "react-countdown": "^2.3.6",
     "react-countup": "^6.5.3",
+=======
+    "lucide-react": "^0.555.0",
+    "react-countdown": "^2.3.6",
+>>>>>>> 89e25ecc54e891fbc29b9cd26b4fb138b2f163a5
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
