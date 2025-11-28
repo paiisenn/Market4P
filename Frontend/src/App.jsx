@@ -6,16 +6,11 @@ import Checkout from "./pages/Checkout/Checkout";
 import Shop from "./pages/Shop/Shop";
 import Login from "./pages/Login/Login";
 
+import AppRouter from "./routers/AppRouter";
+
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/shop" element={<Shop />} />
-      <Route path="/login" element={<Login />} />
-    </Routes>
+    <AppRouter></AppRouter>
   );
 }
 

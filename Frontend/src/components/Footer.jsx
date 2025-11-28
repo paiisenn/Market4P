@@ -18,7 +18,7 @@ const Footer = () => {
                 <div className="w-100">
                     <h1 className="text-xl font-semibold">Đăng ký</h1>
                     <div className="w-[4vh] h-0.5 my-3 bg-amber-600"></div>
-                    <p className="text-gray-400">
+                    <div className="text-gray-400">
                         Đăng ký để nhận những thông tin mới nhất từ chúng tôi.
                         <br />
                         <div className="flex items-center gap-x-1 mt-4">
@@ -29,12 +29,12 @@ const Footer = () => {
                                 <Send></Send>
                             </div>
                         </div>
-                    </p>
+                    </div>
                 </div>
                 <div className="w-100">
                     <h1 className="text-xl font-semibold">Hợp tác</h1>
                     <div className="w-[4vh] h-0.5 my-3 bg-amber-600"></div>
-                    <p className="text-gray-400">
+                    <div className="text-gray-400">
                         UTH, Binh Thanh, Ho Chi Minh City
                         <br />
                         <br />
@@ -42,7 +42,7 @@ const Footer = () => {
                         <br />
                         <br />
                         +84 123 456 789
-                    </p>
+                    </div>
                 </div>
 
             </div>

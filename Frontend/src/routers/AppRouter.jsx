@@ -1,8 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-<<<<<<< HEAD
 import RootLayout from "../components/RootLayout";
-import App from "../App.jsx";
-import Login from "../pages/Login/Login";
+
+// User Pages & Layout
+import App from "../App";
+import Login from "../pages/Login/Login.jsx";
+// import Register from "../pages/Login/Register.jsx";
+// import ForgotPassword from "../pages/Login/ForgotPassword";
 import Home from "../pages/Home/Home";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
@@ -26,66 +29,52 @@ import Customers from "../components/Admin/content/Customers.jsx";
 import CustomerDetail from "../components/Admin/content/CustomerDetail.jsx";
 import Inventory from "../components/Admin/content/Inventory.jsx";
 import Coupons from "../components/Admin/content/Coupons.jsx";
-=======
-import App from "../App";
-import Login from "../pages/Login/Login";
-import Register from "../pages/Login/Register";
-import ForgotPassword from "../pages/Login/ForgotPassword";
-import Home from "../pages/Home/Home";
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-<<<<<<< HEAD
-        {/* RootLayout sẽ bao bọc toàn bộ ứng dụng để quản lý Toaster */}
-        <Route element={<RootLayout />}>
-          {/* Trang Login nằm ngoài layout chính (không có Navbar, Footer) */}
-          <Route path="/login" element={<Login />} />
+    <Routes>
+      {/* RootLayout bọc toàn bộ ứng dụng */}
+      <Route element={<RootLayout />}>
+        {/* Các trang đăng nhập/đăng ký/forgot password nằm ngoài layout App */}
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/register" element={<Register />} /> */}
+        {/* <Route path="/forgot" element={<ForgotPassword />} /> */}
 
-          {/* App layout bao bọc các trang người dùng thông thường */}
-          <Route path="/" element={<App />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="shop" element={<Shop />} />
-            <Route path="checkout" element={<Checkout />} />
-          </Route>
-
-          {/* Các route của Admin được bảo vệ và có layout riêng (AdminDashboard) */}
-          <Route
-            path="/admin/dashboard/*"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<DashboardHome />} />
-            <Route path="products" element={<ProductList />} />
-            <Route path="products/add" element={<AddProduct />} />
-            <Route path="search" element={<SearchResults />} />
-            <Route path="notifications" element={<AllNotifications />} />
-            <Route path="profile" element={<AdminProfile />} />
-            <Route path="settings" element={<AdminSettings />} />
-            <Route path="products/edit/:productId" element={<EditProduct />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="orders/:orderId" element={<OrderDetail />} />
-            <Route path="customers" element={<Customers />} />
-            <Route path="customers/:customerId" element={<CustomerDetail />} />
-            <Route path="inventory" element={<Inventory />} />
-            <Route path="coupons" element={<Coupons />} />
-          </Route>
-=======
+        {/* Các trang người dùng bình thường, có App layout */}
         <Route path="/" element={<App />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="forgot" element={<ForgotPassword />} />
+          <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
->>>>>>> a686210dd9fa7765c9de5ba34c272e50d3fd1bcc
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="shop" element={<Shop />} />
+          <Route path="checkout" element={<Checkout />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+
+        {/* Admin routes với layout riêng và được bảo vệ */}
+        <Route
+          path="/admin/dashboard/*"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="products" element={<ProductList />} />
+          <Route path="products/add" element={<AddProduct />} />
+          <Route path="search" element={<SearchResults />} />
+          <Route path="notifications" element={<AllNotifications />} />
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route path="products/edit/:productId" element={<EditProduct />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="orders/:orderId" element={<OrderDetail />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="customers/:customerId" element={<CustomerDetail />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="coupons" element={<Coupons />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 }
