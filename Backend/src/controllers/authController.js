@@ -27,9 +27,15 @@ export const signUp = async (req, res) => {
     }
 
     // kiểm tra username tồn tại chưa
-    const duplicate = await User.findOne({ username });
-    if (duplicate) {
-      return res.status(409).json({ message: "username đã tồn tại" });
+    const duplicateUsername = await User.findOne({ username });
+    if (duplicateUsername) {
+      return res.status(409).json({ message: "Username đã tồn tại" });
+    }
+
+    // kiểm tra email tồn tại chưa
+    const duplicateEmail = await User.findOne({ email });
+    if (duplicateEmail) {
+      return res.status(409).json({ message: "Email đã tồn tại" });
     }
 
     // mã hoá password
