@@ -175,8 +175,8 @@ function LoginCard() {
 
       // Lưu user info với role vào localStorage
       const userInfo = {
-        email: result.email,
-        name: email.split("@")[0], // Lấy phần trước @ làm tên display
+        email: email,
+        name: result.displayName,
         role: result.role,
         accessToken: result.accessToken,
       };
@@ -184,7 +184,7 @@ function LoginCard() {
       localStorage.setItem("accessToken", result.accessToken);
 
       // Chuẩn bị thông điệp chào mừng
-      const successMessage = `Đăng nhập thành công! Chào mừng ${userInfo.name}.`;
+      const successMessage = `Đăng nhập thành công! Chào mừng ${result.displayName}.`;
       sessionStorage.setItem("loginSuccessMessage", successMessage);
 
       // Điều hướng

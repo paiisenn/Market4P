@@ -26,7 +26,7 @@ export const loginUser = async (email, password) => {
   return {
     accessToken: data.accessToken,
     role: data.role,
-    email: email,
+    displayName: data.displayName,
   };
 };
 
@@ -56,8 +56,8 @@ export const registerUser = async (
     body: JSON.stringify({
       username,
       email,
-      firstName, // Đảm bảo key là firstName
-      lastName, // Đảm bảo key là lastName
+      firstName,
+      lastName,
       password,
       confirmPassword,
     }),
