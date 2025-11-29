@@ -3,6 +3,7 @@ import Sidebar from "../../components/Admin/Layout/AdminSidebar";
 import Header from "../../components/Admin/Layout/AdminHeader";
 import { Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import CustomToaster from "../../components/Toaster";
 
 const IDLE_TIMEOUT = 15 * 60 * 1000; // 30 phút
 function Dashboard() {
@@ -18,6 +19,15 @@ function Dashboard() {
   useEffect(() => {
     localStorage.setItem("sidebarOpen", JSON.stringify(isSidebarOpen));
   }, [isSidebarOpen]);
+
+  // Hiển thị thông báo đăng nhập thành công từ sessionStorage (admin)
+  useEffect(() => {
+    const message = sessionStorage.getItem("loginSuccessMessage");
+    if (message) {
+      toast.success(message, { duration: 4000 });
+      sessionStorage.removeItem("loginSuccessMessage");
+    }
+  }, []);
 
   // Logic xử lý hết hạn phiên làm việc
   useEffect(() => {
@@ -56,9 +66,11 @@ function Dashboard() {
   }, [navigate]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar isSidebarOpen={isSidebarOpen} />
+    <>
+      <CustomToaster />
+      <div className="flex h-screen bg-gray-100">
+        {/* Sidebar */}
+        <Sidebar isSidebarOpen={isSidebarOpen} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -80,7 +92,8 @@ function Dashboard() {
           ></div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

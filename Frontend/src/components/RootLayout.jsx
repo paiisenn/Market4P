@@ -1,21 +1,23 @@
 import React, { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import CustomToaster from "./Toaster";
 
 const RootLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Hiển thị toast nếu có thông điệp được gửi qua state từ trang đăng nhập
   useEffect(() => {
     if (location.state?.message) {
       toast.success(location.state.message, {
-        duration: 3000,
+        duration: 4000,
       });
-      // Xóa state để không hiển thị lại khi refresh trang
-      window.history.replaceState({}, document.title);
+      // Xóa state để không hiển thị lại khi refresh hoặc điều hướng
+      // bằng cách thay thế state hiện tại bằng một object rỗng.
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location]);
+  }, [location, navigate]);
 
   return (
     <>

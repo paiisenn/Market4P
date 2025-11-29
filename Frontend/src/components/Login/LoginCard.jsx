@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, UserRound, Check, X } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
+import { loginUser, registerUser } from "../../services/authApi";
 
 // Component nhỏ để hiển thị độ mạnh mật khẩu
 const PasswordStrengthMeter = ({ password = "" }) => {
@@ -93,8 +94,9 @@ const PasswordStrengthMeter = ({ password = "" }) => {
         {requirements.map((req, index) => (
           <div
             key={index}
-            className={`flex items-center transition-colors duration-300 ${req.satisfied ? "text-green-600" : "text-gray-500"
-              }`}
+            className={`flex items-center transition-colors duration-300 ${
+              req.satisfied ? "text-green-600" : "text-gray-500"
+            }`}
           >
             {req.satisfied ? (
               <Check className="w-3.5 h-3.5 mr-1.5 shrink-0" />
@@ -119,6 +121,8 @@ function LoginCard() {
   const [loading, setLoading] = useState(false);
   // Register state
   const [regUser, setRegUser] = useState("");
+  const [regLastName, setRegLastName] = useState("");
+  const [regFirstName, setRegFirstName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regConfirmPassword, setRegConfirmPassword] = useState("");
@@ -166,55 +170,49 @@ function LoginCard() {
     if (v) return toast.error(v);
     setLoading(true);
 
-    // Giả lập gọi API
     try {
-      const user = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Hardcode thông tin đăng nhập của admin để demo
-          if (email === "admin@gmail.com" && password === "admin123") {
-            // Nếu là admin, trả về object với role 'admin'
-            resolve({ email: "admin@gmail.com", name: "Admin", role: "admin" });
-          } else if (email === "user@gmail.com" && password === "user123") {
-            // Giả lập đăng nhập user thành công, trả về role 'user'
-            resolve({
-              email: "user@gmail.com",
-              name: "Khách Hàng",
-              role: "user",
-            });
-          } else {
-            reject(new Error("Email hoặc mật khẩu không chính xác!"));
-          }
-        }, 700);
-      });
+      const result = await loginUser(email, password);
 
-      // Lưu toàn bộ thông tin người dùng vào localStorage
-      localStorage.setItem("user", JSON.stringify(user));
+      // Lưu user info với role vào localStorage
+      const userInfo = {
+        email: result.email,
+        name: email.split("@")[0], // Lấy phần trước @ làm tên display
+        role: result.role,
+        accessToken: result.accessToken,
+      };
+      localStorage.setItem("user", JSON.stringify(userInfo));
+      localStorage.setItem("accessToken", result.accessToken);
 
       // Chuẩn bị thông điệp chào mừng
-      const successMessage = `Đăng nhập thành công! Chào mừng ${user.name}.`;
+      const successMessage = `Đăng nhập thành công! Chào mừng ${userInfo.name}.`;
+      sessionStorage.setItem("loginSuccessMessage", successMessage);
 
-      // Điều hướng ngay lập tức và gửi thông điệp qua state
-      if (user.role === "admin") {
-        navigate("/admin/dashboard", { state: { message: successMessage } });
+      // Điều hướng
+      if (result.role === "admin") {
+        navigate("/admin/dashboard");
       } else {
-        // Đối với user thường, bạn cũng có thể làm tương tự ở layout chính
-        navigate("/", { state: { message: successMessage } });
+        navigate("/");
       }
+
+      // Làm trống form
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Đăng nhập thất bại");
     } finally {
       setLoading(false);
     }
-    await new Promise((r) => setTimeout(r, 700));
-    setLoading(false);
-    toast.success("Đăng nhập thành công!");
-    // Làm trống form đăng nhập
-    setEmail("");
-    setPassword("");
   }
 
   function validateRegister() {
-    if (!regUser || !regEmail || !regPassword || !regConfirmPassword)
+    if (
+      !regUser ||
+      !regLastName ||
+      !regFirstName ||
+      !regEmail ||
+      !regPassword ||
+      !regConfirmPassword
+    )
       return "Vui lòng nhập đầy đủ thông tin!";
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -236,15 +234,32 @@ function LoginCard() {
     const v = validateRegister();
     if (v) return toast.error(v);
     setRegLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setRegLoading(false);
-    toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
-    setFormState("login");
-    // Làm trống form đăng ký
-    setRegUser("");
-    setRegEmail("");
-    setRegPassword("");
-    setRegConfirmPassword("");
+
+    try {
+      await registerUser(
+        regUser,
+        regEmail,
+        regFirstName, // Sửa: Gửi đi firstName
+        regLastName, // Sửa: Gửi đi lastName
+        regPassword,
+        regConfirmPassword
+      );
+
+      toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+      setFormState("login");
+
+      // Làm trống form đăng ký
+      setRegUser("");
+      setRegLastName("");
+      setRegFirstName("");
+      setRegEmail("");
+      setRegPassword("");
+      setRegConfirmPassword("");
+    } catch (error) {
+      toast.error(error.message || "Đăng ký thất bại");
+    } finally {
+      setRegLoading(false);
+    }
   }
 
   async function handleForgotPassword(e) {
@@ -288,12 +303,12 @@ function LoginCard() {
         style={{ height: containerHeight }}
       >
         <div
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "login"
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 -translate-x-full pointer-events-none invisible"
-            }`} // Gán ref cho div chứa form Login
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
+            formState === "login"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-full pointer-events-none invisible"
+          }`} // Gán ref cho div chứa form Login
         >
-
           {/* Login Form */}
           <form
             ref={loginFormRef}
@@ -394,10 +409,11 @@ function LoginCard() {
           </form>
         </div>
         <div
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "register"
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 translate-x-full pointer-events-none invisible"
-            }`}
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
+            formState === "register"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-full pointer-events-none invisible"
+          }`}
         >
           {/* Gán ref cho div chứa form Register */}
           {/* Register Form */}
@@ -418,6 +434,30 @@ function LoginCard() {
                 </span>
               }
             />
+
+            {/* Thêm 2 ô Họ và Tên */}
+            <div className="flex gap-6">
+              <div className="flex-2">
+                {" "}
+                {/* Chiếm 3 phần */}
+                <FormInput
+                  label="Họ"
+                  value={regLastName}
+                  onChange={(e) => setRegLastName(e.target.value)}
+                  placeholder="Nguyễn Văn"
+                />
+              </div>
+              <div className="flex-1">
+                {" "}
+                {/* Chiếm 1 phần */}
+                <FormInput
+                  label="Tên"
+                  value={regFirstName}
+                  onChange={(e) => setRegFirstName(e.target.value)}
+                  placeholder="An"
+                />
+              </div>
+            </div>
 
             <FormInput
               label="Email"
@@ -516,10 +556,11 @@ function LoginCard() {
         </div>
         {/* Forgot Password Form */}
         <div
-          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${formState === "forgotPassword"
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 translate-x-full pointer-events-none invisible"
-            }`}
+          className={`absolute w-full top-0 left-0 transition-all duration-500 ease-in-out ${
+            formState === "forgotPassword"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-full pointer-events-none invisible"
+          }`}
         >
           <form
             ref={forgotFormRef}

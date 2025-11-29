@@ -9,6 +9,8 @@ const CustomToaster = () => {
       toastOptions={{
         duration: 4000,
         style: {
+          whiteSpace: "nowrap",
+          maxWidth: "90vw",
           padding: "12px 16px",
           color: "#374151",
           borderRadius: "8px",
