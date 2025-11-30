@@ -8,7 +8,7 @@ import {
   Type,
   Tags,
   CircleDollarSign,
-  Warehouse,
+  Percent,
   FileText,
   Activity,
 } from "lucide-react";
@@ -67,6 +67,7 @@ function AddProduct() {
     name: "",
     category: "",
     price: "",
+    discount: "",
     description: "",
     status: "Còn hàng", // Thêm trạng thái mặc định
   });
@@ -124,6 +125,7 @@ function AddProduct() {
         console.log("Đã lưu sản phẩm:", {
           ...product,
           stock: 0, // Mặc định tồn kho là 0 khi thêm mới
+          discount: product.discount || 0,
           image: imageFile.name,
         });
         resolve();
@@ -247,7 +249,7 @@ function AddProduct() {
               <legend className="block text-base font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Giá sản phẩm
               </legend>
-              <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label
                     htmlFor="price"
@@ -264,6 +266,25 @@ function AddProduct() {
                     placeholder="Ví dụ: 250000"
                     min="0"
                     icon={<CircleDollarSign size={18} />}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="discount"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                  >
+                    Giảm giá (%)
+                  </label>
+                  <FormInput
+                    id="discount"
+                    name="discount"
+                    type="number"
+                    value={product.discount}
+                    onChange={handleInputChange}
+                    placeholder="Ví dụ: 8"
+                    min="0"
+                    max="100"
+                    icon={<Percent size={18} />}
                   />
                 </div>
               </div>

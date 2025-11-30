@@ -8,8 +8,8 @@ import {
   Type,
   Tags,
   CircleDollarSign,
-  Warehouse,
   FileText,
+  Percent,
   Frown,
   Activity,
 } from "lucide-react";
@@ -265,7 +265,7 @@ function EditProduct() {
               <legend className="block text-base font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Giá sản phẩm
               </legend>
-              <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label
                     htmlFor="price"
@@ -277,11 +277,30 @@ function EditProduct() {
                     id="price"
                     name="price"
                     type="number"
-                    value={product.price}
+                    value={product.price || ""}
                     onChange={handleInputChange}
                     placeholder="Ví dụ: 250000"
                     min="0"
                     icon={<CircleDollarSign size={18} />}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="discount"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                  >
+                    Giảm giá (%)
+                  </label>
+                  <FormInput
+                    id="discount"
+                    name="discount"
+                    type="number"
+                    value={product.discount || ""}
+                    onChange={handleInputChange}
+                    placeholder="Ví dụ: 8"
+                    min="0"
+                    max="100"
+                    icon={<Percent size={18} />}
                   />
                 </div>
               </div>

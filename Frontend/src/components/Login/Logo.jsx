@@ -1,7 +1,6 @@
 import React from "react";
 import { Store } from "lucide-react";
 
-
 function Logo() {
   return (
     <div className="flex items-center gap-x-1 text-amber-600">

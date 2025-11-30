@@ -22,7 +22,7 @@ const InputField = ({ label, ...props }) => (
     </label>
     <input
       {...props}
-      className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      className="w-full px-3 py-2 bg-gray-50 border transition duration-200 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
     />
   </div>
 );
@@ -117,7 +117,7 @@ function CouponModal({ isOpen, onClose, onSave, coupon }) {
               </h3>
               <button
                 onClick={onClose}
-                className="p-1 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
+                className="p-1 rounded-full cursor-pointer duration-200 text-gray-500 hover:text-red-500 hover:bg-red-200 dark:hover:bg-gray-700"
               >
                 <X size={20} />
               </button>
@@ -143,7 +143,7 @@ function CouponModal({ isOpen, onClose, onSave, coupon }) {
                     name="type"
                     value={formData.type}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    className="w-full px-3 py-2 transition duration-200 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                     <option value="percentage">Phần trăm (%)</option>
                     <option value="fixed">Số tiền cố định (VNĐ)</option>
@@ -192,13 +192,13 @@ function CouponModal({ isOpen, onClose, onSave, coupon }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
+                  className="px-4 py-2 text-sm font-medium cursor-pointer duration-200 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  className="flex items-center cursor-pointer duration-200 gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                 >
                   <Save size={16} /> Lưu
                 </button>

@@ -241,6 +241,9 @@ function ProductList() {
                   Giá (VNĐ)
                 </th>
                 <th scope="col" className="px-6 py-3 text-center">
+                  Giảm giá
+                </th>
+                <th scope="col" className="px-6 py-3 text-center">
                   Tồn kho
                 </th>
                 <th scope="col" className="px-6 py-3 text-center">
@@ -274,19 +277,31 @@ function ProductList() {
                       <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         <div className="flex items-center gap-4">
                           <img
-                            src={product.img}
+                            src={product.avatar}
                             alt={product.name}
                             className="w-12 h-12 rounded-lg object-cover"
                           />
-                          <span>{product.name}</span>
+                          <div>
+                            <div className="font-semibold">{product.name}</div>
+                            <div className="text-xs text-gray-500">
+                              {product.id}
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">{product.category}</td>
                       <td className="px-6 py-4">
                         {product.price.toLocaleString("vi-VN")}
                       </td>
-                      <td className="px-6 py-4 text-center">{product.stock}</td>
                       <td className="px-6 py-4 text-center">
+                        {product.discount > 0 ? (
+                          <span className="font-semibold text-red-500">{`${product.discount}%`}</span>
+                        ) : (
+                          "Không"
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">{product.stock}</td>
+                      <td className="px-4 py-4 text-center">
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
                             product.status
@@ -320,7 +335,7 @@ function ProductList() {
                 ) : (
                   <motion.tr>
                     <td
-                      colSpan="6"
+                      colSpan="7"
                       className="text-center py-10 text-gray-500 dark:text-gray-400"
                     >
                       Không tìm thấy sản phẩm nào phù hợp.

@@ -433,7 +433,7 @@ function OrdersList() {
                           .map((item) => `${item.name} (x${item.quantity})`)
                           .join(", ")}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-4 text-center">
                         {order.total.toLocaleString("vi-VN")}
                       </td>
                       <td className="px-6 py-4 text-center">

@@ -100,7 +100,7 @@ function UpdateStockModal({ isOpen, onClose, onConfirm, product }) {
                   value={quantityToAdd}
                   onChange={(e) => setQuantityToAdd(e.target.value)}
                   min="1"
-                  className="mt-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="mt-1 w-full px-3 py-2 transition duration-200 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="Nhập số lượng..."
                   autoFocus
                 />
@@ -118,7 +118,7 @@ function UpdateStockModal({ isOpen, onClose, onConfirm, product }) {
                   value={lowStockThreshold}
                   onChange={(e) => setLowStockThreshold(e.target.value)}
                   min="0"
-                  className="mt-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="mt-1 w-full px-3 py-2 transition duration-200 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="Ví dụ: 10"
                 />
               </div>
@@ -126,13 +126,13 @@ function UpdateStockModal({ isOpen, onClose, onConfirm, product }) {
             <div className="flex justify-end gap-3 p-4 bg-gray-50 dark:bg-gray-900/50 border-t dark:border-gray-700">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
+                className="px-4 py-2 text-sm font-medium cursor-pointer duration-200 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
               >
                 Hủy
               </button>
               <button
                 onClick={handleConfirmClick}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                className="flex items-center gap-2 px-4 py-2 cursor-pointer duration-200 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
               >
                 <Plus size={16} /> Xác nhận
               </button>

@@ -336,14 +336,14 @@ function Coupons() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleEditClick(coupon)}
-                          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400"
+                          className="p-2 rounded-full cursor-pointer duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400"
                           title="Chỉnh sửa"
                         >
                           <Edit size={18} />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(coupon)}
-                          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-red-600 dark:text-red-400"
+                          className="p-2 rounded-full cursor-pointer duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 text-red-600 dark:text-red-400"
                           title="Xóa"
                         >
                           <Trash2 size={18} />

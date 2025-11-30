@@ -36,7 +36,7 @@ function BanCustomerModal({ isOpen, onClose, onConfirm, customerName }) {
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           rows={3}
-          className="mt-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="mt-1 w-full px-3 py-2 transition duration-200 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           placeholder="Ví dụ: Vi phạm điều khoản, spam,..."
         ></textarea>
       </div>

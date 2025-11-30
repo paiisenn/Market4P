@@ -196,7 +196,7 @@ function Inventory() {
             placeholder="Tìm theo tên hoặc ID sản phẩm..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="w-full sm:w-72 pl-10 pr-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-amber-500"
+            className="w-full sm:w-72 duration-200 transition pl-10 pr-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-amber-500"
           />
         </div>
       </div>
@@ -252,7 +252,7 @@ function Inventory() {
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                       <div className="flex items-center gap-3">
                         <img
-                          src={product.img}
+                          src={product.avatar}
                           alt={product.name}
                           className="w-10 h-10 rounded-md object-cover"
                         />

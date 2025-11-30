@@ -11,13 +11,14 @@ import {
   ClipboardList,
   Ticket,
   Bell,
+  Store,
   User,
   Settings,
 } from "lucide-react";
 
 const NavItem = ({ to, icon, children, end = false, isSidebarOpen }) => {
   const baseClasses =
-    "flex items-center py-2.5 text-sm font-medium rounded-lg transition-all duration-200";
+    "flex items-center py-2.5 px-4 text-sm font-medium rounded-lg transition-colors duration-200";
   const inactiveClasses = "text-gray-300 hover:bg-gray-700 hover:text-white";
   const activeClasses = "bg-amber-500 text-white shadow-md";
 
@@ -29,14 +30,14 @@ const NavItem = ({ to, icon, children, end = false, isSidebarOpen }) => {
         className={({ isActive }) => `
           ${baseClasses} 
           ${isActive ? activeClasses : inactiveClasses}
-          ${isSidebarOpen ? "px-4" : "px-0 justify-center"}
+          ${!isSidebarOpen && "justify-center"}
         `}
       >
         {icon}
         <span
           className={`
-            whitespace-nowrap transition-all duration-200
-            ${isSidebarOpen ? "ml-3 opacity-100" : "w-0 ml-0 opacity-0"}
+            overflow-hidden whitespace-nowrap transition-all duration-200
+            ${isSidebarOpen ? "ml-3 max-w-xs" : "max-w-0"}
           `}
         >
           {children}
@@ -73,7 +74,13 @@ function AdminSidebar({ isSidebarOpen }) {
             ${isSidebarOpen ? "p-5" : "py-5 px-2"}
           `}
         >
-          <Logo size={isSidebarOpen ? 48 : 36} collapsed={!isSidebarOpen} />
+          {isSidebarOpen ? (
+            <Logo />
+          ) : (
+            <div className="text-amber-600">
+              <Store size={36} strokeWidth={2} />
+            </div>
+          )}
           <p
             className={`
               text-sm text-gray-400 mt-2 whitespace-nowrap transition-opacity duration-200
@@ -105,11 +112,24 @@ function AdminSidebar({ isSidebarOpen }) {
             <div className="mt-4">
               <h3
                 className={`
-            pb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase transition-all duration-300 overflow-hidden whitespace-nowrap
-            ${isSidebarOpen ? "px-4" : "text-center px-2"}
-          `}
+                  relative px-4 pb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase h-5 flex items-center
+                  ${!isSidebarOpen ? "justify-center" : "justify-start"}
+                `}
               >
-                {isSidebarOpen ? "Quản lý" : "•••"}
+                <span
+                  className={`transition-opacity duration-200 whitespace-nowrap ${
+                    isSidebarOpen ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  Quản lý
+                </span>
+                <span
+                  className={`absolute left-1/2 -translate-x-1/2 transition-opacity duration-200 ${
+                    !isSidebarOpen ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  •••
+                </span>
               </h3>
             </div>
 
@@ -162,11 +182,24 @@ function AdminSidebar({ isSidebarOpen }) {
             <div className="mt-4">
               <h3
                 className={`
-            pb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase transition-all duration-300 overflow-hidden whitespace-nowrap
-            ${isSidebarOpen ? "px-4" : "text-center px-2"}
-          `}
+                  relative px-4 pb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase h-5 flex items-center
+                  ${!isSidebarOpen ? "justify-center" : "justify-start"}
+                `}
               >
-                {isSidebarOpen ? "Cá nhân" : "•••"}
+                <span
+                  className={`transition-opacity duration-200 whitespace-nowrap ${
+                    isSidebarOpen ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  Cá nhân
+                </span>
+                <span
+                  className={`absolute left-1/2 -translate-x-1/2 transition-opacity duration-200 ${
+                    !isSidebarOpen ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  •••
+                </span>
               </h3>
             </div>
 
